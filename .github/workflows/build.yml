@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
         with:
-          depth: 50
+          fetch-depth: 50
       - uses: XAMPPRocky/get-github-release@v1
         id: cross
         with:
@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          depth: 50
+          fetch-depth: 50
       - run: scripts/set_rust_version.bash ${{ matrix.channel }} ${{ matrix.target }}
         shell: bash
       - run: scripts/build.bash cargo ${{ matrix.target }}
@@ -65,7 +65,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          depth: 50
+          fetch-depth: 50
 
       - uses: actions/download-artifact@v1
         with:
@@ -93,7 +93,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          depth: 50
+          fetch-depth: 50
 
       - name: Download Cross
         uses: actions/download-artifact@v1
@@ -119,7 +119,5 @@ jobs:
         channel: [stable, beta]
         target:
           # Linux
-          - aarch64-unknown-linux-gnu
-          - aarch64-unknown-linux-musl
           - x86_64-unknown-linux-gnu
           - x86_64-unknown-linux-musl
