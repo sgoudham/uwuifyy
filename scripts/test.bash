@@ -2,7 +2,7 @@
 # Script for building your rust projects.
 set -e
 
-source ci/common.bash
+source scripts/common.bash
 
 # $1 {path} = Path to cross/cargo executable
 CROSS=$1
