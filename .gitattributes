@@ -1,2 +1,5 @@
 examples/tiktok_app_reviews.csv filter=lfs diff=lfs merge=lfs -text
 examples/tokyo-2020-olympics-tweets.csv filter=lfs diff=lfs merge=lfs -text
+examples/uwu/uwu-tiktok_app_reviews.csv filter=lfs diff=lfs merge=lfs -text
+examples/uwu/uwu-tokyo-2020-olympics-tweets.csv filter=lfs diff=lfs merge=lfs -text
+examples/gifs/amazon-ratings-reviews.gif filter=lfs diff=lfs merge=lfs -text
