@@ -8,11 +8,11 @@
     <img src="https://img.shields.io/github/issues/sgoudham/uwuifyy?label=issues"/>
 </p>
 
-> A robust, customizable, efficient and easy-to-use command line application to uwu'ify your text!
+> A robust, customizable, efficient and easy-to-use command line application to uwu'ify your text! 
 > 
 ![](logo/UwUifyy.png)
 >
-> Credits: Jade Nelson
+> Logo Credits: Jade Nelson
 
 ## Table Of Contents
 
