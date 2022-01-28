@@ -19,7 +19,7 @@
     * [Installation](#installation)
         + [Windows](#windows)
         + [Linux / macOS](#Linux-/-macOS)
-        + [Rust/Cargo](#Rust/Cargo)
+        + [Rust/Cargo](#Rust-/-Cargo)
     * [Usage](#usage)
         + [Text Input to Text Output](#text-input-to-text-output)
         + [Text Input to File Output](#text-input-to-file-output)
@@ -127,7 +127,7 @@ source ~/.bash_profile
 uwuifyy --help
 ```
 
-### Rust/Cargo
+### Rust / Cargo
 
 Alternatively, if using Rust's package manager, `Cargo`, all that is needed is
 
