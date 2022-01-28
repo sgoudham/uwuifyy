@@ -186,7 +186,7 @@ According to all known laws of aviation, there is no way a bee should be able to
 ```
 
 ```shell
-uwuifyy --infile your/path/here/infile.txt --outfile your/path/here/outfile.txt                                                                           
+uwuifyy --infile your/path/here/infile.txt --outfile your/path/here/outfile.txt
   [00:00:00] [############################################################] 85B/85B (0s) UwU'ifying Complete! 
 ```
 
