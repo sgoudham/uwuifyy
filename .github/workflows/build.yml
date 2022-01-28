@@ -53,11 +53,6 @@ jobs:
           # MSVC
           - i686-pc-windows-msvc
           - x86_64-pc-windows-msvc
-          # GNU: You typically only need to test Windows GNU if you're
-          # specifically targetting it, and it can cause issues with some
-          # dependencies if you're not so it's disabled by self.
-          # - i686-pc-windows-gnu
-          # - x86_64-pc-windows-gnu
 
   macos:
     runs-on: macos-latest
@@ -74,10 +69,10 @@ jobs:
 
       - run: chmod +x /usr/local/bin/cross
 
-      - run: scripts/set_rust_version.bash ${{ matrix.channel }} ${{ matrix.target }}
-      - run: scripts/build.bash cross ${{ matrix.target }}
+      - run: sudo scripts/set_rust_version.bash ${{ matrix.channel }} ${{ matrix.target }}
+      - run: sudo scripts/build.bash cross ${{ matrix.target }}
         # Only test on macOS platforms since we can't simulate the others.
-      - run: scripts/test.bash cross ${{ matrix.target }}
+      - run: sudo scripts/test.bash cross ${{ matrix.target }}
         if: matrix.target == 'x86_64-apple-darwin'
 
     strategy:
@@ -101,12 +96,9 @@ jobs:
           name: cross-linux-musl
           path: /tmp/
       - run: chmod +x /tmp/cross
-      - run: scripts/set_rust_version.bash ${{ matrix.channel }} ${{ matrix.target }}
-      - run: scripts/build.bash /tmp/cross ${{ matrix.target }}
-        # These targets have issues with being tested so they are disabled
-        # by default. You can try disabling to see if they work for
-        # your project.
-      - run: scripts/test.bash /tmp/cross ${{ matrix.target }}
+      - run: sudo scripts/set_rust_version.bash ${{ matrix.channel }} ${{ matrix.target }}
+      - run: sudo scripts/build.bash /tmp/cross ${{ matrix.target }}
+      - run: sudo scripts/test.bash /tmp/cross ${{ matrix.target }}
         if: |
           !contains(matrix.target, 'android') &&
           !contains(matrix.target, 'bsd') &&
