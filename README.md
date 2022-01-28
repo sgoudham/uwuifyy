@@ -14,7 +14,6 @@
 ## Table Of Contents
 
 - [uwuifyy](#uwuifyy)
-    * [Table Of Contents](#table-of-contents)
     * [About](#about)
     * [Features](#features)
         + [Modifiers](#modifiers)
