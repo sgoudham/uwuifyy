@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v1
         with:
           depth: 50
-      - uses: sgoudham/get-github-release@v1
+      - uses: XAMPPRocky/get-github-release@v1
         id: cross
         with:
           owner: rust-embedded
