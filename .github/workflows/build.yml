@@ -1,12 +1,12 @@
 name: build
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
 
 jobs:
-  # This job downloads and stores `cross` as an artifact, so that it can be
-  # redownloaded across all of the jobs. Currently this copied pasted between
-  # `build.yml` and `deploy.yml`. Make sure to update both places when making
-  # changes.
   install-cross:
     runs-on: ubuntu-latest
     steps:
@@ -26,14 +26,10 @@ jobs:
           path: ${{ steps.cross.outputs.install_path }}
     strategy:
       matrix:
-        platform: [linux-musl, apple-darwin]
+        platform: [ linux-musl, apple-darwin ]
 
   windows:
     runs-on: windows-latest
-    # Windows technically doesn't need this, but if we don't block windows on it
-    # some of the windows jobs could fill up the concurrent job queue before
-    # one of the install-cross jobs has started, so this makes sure all
-    # artifacts are downloaded first.
     needs: install-cross
     steps:
       - uses: actions/checkout@v2
@@ -48,7 +44,7 @@ jobs:
 
     strategy:
       matrix:
-        channel: [stable, beta]
+        channel: [ stable, beta ]
         target:
           - x86_64-pc-windows-gnu
           - x86_64-pc-windows-msvc
@@ -76,7 +72,7 @@ jobs:
 
     strategy:
       matrix:
-        channel: [stable, beta]
+        channel: [ stable, beta ]
         target:
           # macOS
           - x86_64-apple-darwin
@@ -107,7 +103,7 @@ jobs:
 
     strategy:
       matrix:
-        channel: [stable, beta]
+        channel: [ stable, beta ]
         target:
           # Linux
           - x86_64-unknown-linux-gnu
