@@ -54,7 +54,12 @@ allows you to _uwu'ify_ text and files from within your own terminal in an _extr
 
 ## Installation
 
-TODO
+Through the use of Cargo:
+```commandline
+cargo install uwuifyy
+```
+
+**Binaries will be available soon™**
 
 ## Quick Start
 
