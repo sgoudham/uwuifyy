@@ -1,15 +1,12 @@
 # uwuifyy
 
-<p align="center">
-    <img src="https://img.shields.io/crates/v/uwuifyy"/>
-    <img src="https://img.shields.io/github/license/sgoudham/uwuifyy"/>
-    <img src="https://img.shields.io/badge/project%20type-personal-blueviolet"/>
-    <img src="https://img.shields.io/github/last-commit/sgoudham/uwuifyy"/>
-    <img src="https://img.shields.io/github/issues/sgoudham/uwuifyy?label=issues"/>
-</p>
+[![build](https://github.com/sgoudham/uwuifyy/actions/workflows/build.yml/badge.svg)](https://github.com/sgoudham/uwuifyy/actions/workflows/build.yml)
+[![crate.io](https://img.shields.io/crates/v/uwuifyy)](https://crates.io/crates/uwuifyy)
+[![downloads](https://img.shields.io/crates/d/uwuifyy)](https://crates.io/crates/uwuifyy)
+[![license](https://img.shields.io/github/license/sgoudham/uwuifyy)](LICENSE)
 
-> A robust, customizable, efficient and easy-to-use command line application to uwu'ify your text! 
-> 
+> A robust, customizable, efficient and easy-to-use command line application to uwu'ify your text!
+>
 ![](logo/UwUifyy-Transparent.png)
 >
 > Logo Credits: Jade Nelson
@@ -42,32 +39,43 @@ allows you to _uwu'ify_ text and files from within your own terminal in an _extr
 ## Features
 
 - [x] Seeded by default to allow for reproducible results
+- [x] Excludes URL's & Emails
 - [x] UwU'ify files available locally on disk
 - [x] Completely customisable modifiers
-- [x] Excludes URL's & Emails
-
-### Modifiers
-
-- **words:** The modifier to determine how many words to be uwu'ified
-- **faces:** The modifier for uwu faces e.g hello -> hewwo
-- **actions:** The modifier for actions e.g *shuffles over*
-- **stutters:** The modifier for stutters e.g b-baka!
-- **random:** Flag to enable/disable random uwu'ifying
 
 ## Installation
 
-Through the use of Cargo:
+**Binaries will be available soon™**
+
+If using Rust's package manager, `Cargo`, all that is needed is
+
 ```commandline
 cargo install uwuifyy
 ```
 
-**Binaries will be available soon™**
+If you do not have `Cargo` available on your machine, you can download it as part of 
+Rust [here](https://www.rust-lang.org/tools/install)
 
-## Quick Start
+## Usage
+
+```commandline
+USAGE:
+    uwuifyy.exe [OPTIONS] <--text <TEXT>|--infile <FILE>>
+
+OPTIONS:
+    -t, --text <TEXT>         Text to uwu'ify
+    -i, --infile <FILE>       The file to uwu'ify
+    -o, --outfile <FILE>      The file to output uwu'ified text
+    -w, --words <VALUE>       The modifier to determine how many words to be uwu'ified [default: 1]
+    -f, --faces <VALUE>       The modifier for uwu faces e.g hello -> hewwo [default: 0.05]
+    -a, --actions <VALUE>     The modifier for actions e.g *shuffles over* [default: 0.125]
+    -s, --stutters <VALUE>    The modifier for stutters e.g b-baka! [default: 0.225]
+    -r, --random              Flag to enable/disable random uwu'ifying
+    -h, --help                Print help information
+    -V, --version             Print version information
+```
 
 ### Text Input to Text Output
-
-Usage:
 
 ```commandline
 C:\Your\Path\Here> uwuifyy --text "According to all known laws of aviation, there is no way a bee should be able to fly."
@@ -76,14 +84,10 @@ C:\Your\Path\Here> uwuifyy --text "According to all known laws of aviation, ther
 
 ### Text Input to File Output
 
-Usage:
-
 ```commandline
 C:\Your\Path\Here> uwuifyy --text "According to all known laws of aviation, there is no way a bee should be able to fly." --outfile your/path/here/outfile.txt
   [00:00:00] [############################################################] 104B/104B (0s) UwU'ifying Complete!
 ```
-
-Outfile:
 
 ```text
 your/path/here/outfile.txt
@@ -93,22 +97,16 @@ Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd b
 
 ### File Input to File Output
 
-Infile:
-
 ```text
 your/path/here/infile.txt
 -------------------------------------
 According to all known laws of aviation, there is no way a bee should be able to fly.
 ```
 
-Usage:
-
 ```commandline
 PS D:\Programming\Personal\uwuifyy> uwuifyy --infile your/path/here/infile.txt --outfile your/path/here/outfile.txt                                                                           
   [00:00:00] [############################################################] 85B/85B (0s) UwU'ifying Complete! 
 ```
-
-Outfile:
 
 ```text
 your/path/here/outfile.txt
@@ -116,9 +114,9 @@ your/path/here/outfile.txt
 Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd be abwe to *screams* fwy.
 ```
 
-## Demos
+## Benchmarks
 
-- Examples carried out on a `Dell XPS 15`
+- Benchmarks/Tests carried out on a `Dell XPS 15`
     - CPU: `11th Gen Intel(R) Core(TM) i7-11800H @ 2.30GHz`
     - SSD: `NVMe Micron 2300 1TB`
 
