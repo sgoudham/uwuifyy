@@ -9,6 +9,7 @@
 </p>
 
 > A robust, customizable, efficient and easy-to-use command line application to uwu'ify your text!
+> 
 ![](logo/UwUifyy.png)
 >
 > Credits: Jade Nelson
