@@ -7,7 +7,7 @@
 
 > A robust, customizable, efficient and easy-to-use command line application to uwu'ify your text!
 >
-![](logo/UwUifyy-Transparent.png)
+![](logo/UwUifyy-Transparent-Small.png)
 >
 > Logo Credits: Jade Nelson
 
@@ -16,13 +16,12 @@
 - [uwuifyy](#uwuifyy)
     * [About](#about)
     * [Features](#features)
-        + [Modifiers](#modifiers)
     * [Installation](#installation)
-    * [Quick Start](#quick-start)
+    * [Usage](#usage)
         + [Text Input to Text Output](#text-input-to-text-output)
         + [Text Input to File Output](#text-input-to-file-output)
         + [File Input to File Output](#file-input-to-file-output)
-    * [Demos](#Demos)
+    * [Benchmarks](#benchmarks)
         + [The Complete Works of William Shakespeare](#the-complete-works-of-william-shakespeare)
         + [300k+ Tokyo 2020/21 Olympics Tweets](#300k+-tokyo-2020/21-olympics-tweets)
         + [3.5M Tiktok Google Play Reviews](#35m-tiktok-google-play-reviews)
@@ -53,7 +52,7 @@ If using Rust's package manager, `Cargo`, all that is needed is
 cargo install uwuifyy
 ```
 
-If you do not have `Cargo` available on your machine, you can download it as part of 
+If you do not have `Cargo` available on your machine, you can download it as part of
 Rust [here](https://www.rust-lang.org/tools/install)
 
 ## Usage
