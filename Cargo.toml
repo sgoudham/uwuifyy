@@ -1,0 +1,22 @@
+[package]
+name = "uwuifyy"
+version = "0.1.0"
+edition = "2021"
+authors = ["Goudham <sgoudham@gmail.com>"]
+description = "A robust, customizable, efficient and easy-to-use command line application to uwu'ify your text!"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/sgoudham/uwuifyy"
+homepage = "https://github.com/sgoudham/uwuifyy"
+keywords = ["cli", "uwu", "owo", "uwuify", "anime"]
+categories = ["command-line-utilities"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = { version = "3.0.10", features = ["derive"] }
+rand = "0.8.4"
+rand_seeder = "0.2.2"
+rand_pcg = "0.3.1"
+indicatif = "0.16.2"
+linkify = "0.8.0"
