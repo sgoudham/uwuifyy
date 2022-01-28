@@ -91,7 +91,7 @@ tar -xf uwuifyy-x86_64-unknown-linux-musl.tar.gz
 tar -xf uwuifyy-x86_64-apple-darwin.tar.gz
 ```
 
-3. Movie into `~/bin`
+3. Move into `~/bin`
 
 ```shell
 # Create ~/bin if it does not exist
