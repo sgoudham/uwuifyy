@@ -10,7 +10,7 @@
 
 > A robust, customizable, efficient and easy-to-use command line application to uwu'ify your text! 
 > 
-![](logo/UwUifyy.png)
+![](logo/UwUifyy-Transparent.png)
 >
 > Logo Credits: Jade Nelson
 
