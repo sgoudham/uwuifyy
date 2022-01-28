@@ -17,6 +17,9 @@
     * [About](#about)
     * [Features](#features)
     * [Installation](#installation)
+        + [Windows](#windows)
+        + [Linux / macOS](#Linux-/-macOS)
+        + [Rust/Cargo](#Rust/Cargo)
     * [Usage](#usage)
         + [Text Input to Text Output](#text-input-to-text-output)
         + [Text Input to File Output](#text-input-to-file-output)
@@ -44,7 +47,8 @@ allows you to _uwu'ify_ text and files from within your own terminal in an _extr
 
 ## Installation
 
-Binaries for **Windows**, **macOS** & **Linux** are available with every single [release](https://github.com/sgoudham/uwuifyy/releases)
+Binaries for **Windows**, **macOS** & **Linux** are available with every
+single [release](https://github.com/sgoudham/uwuifyy/releases)
 
 ### Windows
 
@@ -136,7 +140,7 @@ Rust [here](https://www.rust-lang.org/tools/install)
 
 ## Usage
 
-```shell
+```commandline
 USAGE:
     uwuifyy.exe [OPTIONS] <--text <TEXT>|--infile <FILE>>
 
@@ -156,14 +160,14 @@ OPTIONS:
 ### Text Input to Text Output
 
 ```shell
-C:\Your\Path\Here> uwuifyy --text "According to all known laws of aviation, there is no way a bee should be able to fly."
-> Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd be abwe to *screams* fwy.
+uwuifyy --text "According to all known laws of aviation, there is no way a bee should be able to fly."
+  Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd be abwe to *screams* fwy.
 ```
 
 ### Text Input to File Output
 
 ```shell
-C:\Your\Path\Here> uwuifyy --text "According to all known laws of aviation, there is no way a bee should be able to fly." --outfile your/path/here/outfile.txt
+uwuifyy --text "According to all known laws of aviation, there is no way a bee should be able to fly." --outfile your/path/here/outfile.txt
   [00:00:00] [############################################################] 104B/104B (0s) UwU'ifying Complete!
 ```
 
@@ -182,7 +186,7 @@ According to all known laws of aviation, there is no way a bee should be able to
 ```
 
 ```shell
-PS D:\Programming\Personal\uwuifyy> uwuifyy --infile your/path/here/infile.txt --outfile your/path/here/outfile.txt                                                                           
+uwuifyy --infile your/path/here/infile.txt --outfile your/path/here/outfile.txt                                                                           
   [00:00:00] [############################################################] 85B/85B (0s) UwU'ifying Complete! 
 ```
 
