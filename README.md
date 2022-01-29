@@ -18,15 +18,15 @@
     * [Features](#features)
     * [Installation](#installation)
         + [Windows](#windows)
-        + [Linux / macOS](#Linux-/-macOS)
-        + [Rust/Cargo](#Rust-/-Cargo)
+        + [Linux \ macOS](#Linux-\-macOS)
+        + [Rust \ Cargo](#Rust-\-Cargo)
     * [Usage](#usage)
         + [Text Input to Text Output](#text-input-to-text-output)
         + [Text Input to File Output](#text-input-to-file-output)
         + [File Input to File Output](#file-input-to-file-output)
     * [Benchmarks](#benchmarks)
         + [The Complete Works of William Shakespeare](#the-complete-works-of-william-shakespeare)
-        + [300k+ Tokyo 2020/21 Olympics Tweets](#300k+-tokyo-2020/21-olympics-tweets)
+        + [300k+ Tokyo 2020\21 Olympics Tweets](#300k+-tokyo-2020\21-olympics-tweets)
         + [3.5M Tiktok Google Play Reviews](#35m-tiktok-google-play-reviews)
         + [3.6M Amazon Reviews And Ratings](#36m-amazon-reviews-and-ratings)
     * [License](#license)
@@ -78,7 +78,7 @@ setx path "%path%;C:\your\path\here\bin"
 uwuifyy --help
 ```
 
-### Linux / macOS
+### Linux \ macOS
 
 1. Download `uwuifyy-x86_64-unknown-linux-gnu.tar.gz` or `uwuifyy-x86_64-unknown-linux-musl.tar.gz`
    or `uwuifyy-x86_64-apple-darwin.tar.gz`
@@ -127,7 +127,7 @@ source ~/.bash_profile
 uwuifyy --help
 ```
 
-### Rust / Cargo
+### Rust \ Cargo
 
 Alternatively, if using Rust's package manager, `Cargo`, all that is needed is
 
@@ -210,7 +210,7 @@ Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd b
 
 ![](examples/gifs/william-shakespeare.gif)
 
-### 300k+ Tokyo 2020/21 Olympics Tweets
+### 300k+ Tokyo 2020\21 Olympics Tweets
 
 - [Dataset](https://www.kaggle.com/amritpal333/tokyo-olympics-2021-tweets)
 - Size: `98.54 MiB`
