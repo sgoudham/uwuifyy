@@ -1,4 +1,4 @@
-use std::io::Error;
+use std::error::Error;
 use std::path::PathBuf;
 use linkify::{LinkFinder, LinkKind};
 
@@ -59,22 +59,27 @@ impl UwUify {
         }
     }
 
-    pub fn uwuify(&self) -> Result<(), Error> {
+    pub fn uwuify(&self) -> Result<(), Box<dyn Error>> {
         // Handle Text
         if !self.text.is_empty() {
             let uwu_text = self.uwuify_sentence(&self.text);
 
             // Handle Text Output
             if !self.output.is_empty() {
+                if UwUOutFile::exists(&self.output) {
+                    return Err(format!("File '{}' already exists, aborting operation", &self.output).into());
+                }
+
                 let mut uwu_out_file = match UwUOutFile::new(&self.output) {
                     Ok(uwu_out_file) => uwu_out_file,
-                    Err(err) => return Err(err)
+                    Err(err) => return Err(err.into())
                 };
+
                 let mut uwu_progress_bar = UwUProgressBar::new(uwu_text.len() as u64);
 
                 match uwu_out_file.write_string(&uwu_text) {
                     Ok(_) => (),
-                    Err(err) => return Err(err),
+                    Err(err) => return Err(err.into()),
                 };
 
                 uwu_progress_bar.update_progess(uwu_text.len());
@@ -84,20 +89,24 @@ impl UwUify {
             }
         } else {
             // Handle File I/O
+            if UwUOutFile::exists(&self.output) {
+                return Err(format!("File '{}' already exists, aborting operation", &self.output).into());
+            };
+
             let mut uwu_in_file = match UwUInFile::new(&self.input) {
                 Ok(uwu_in_file) => uwu_in_file,
-                Err(err) => return Err(err),
+                Err(err) => return Err(err.into()),
             };
             let mut uwu_out_file = match UwUOutFile::new(&self.output) {
                 Ok(uwu_out_file) => uwu_out_file,
-                Err(err) => return Err(err)
+                Err(err) => return Err(err.into())
             };
             let mut uwu_progress_bar = UwUProgressBar::new(uwu_in_file.get_file_bytes());
 
             loop {
                 let bytes_read_in = match uwu_in_file.read_until_newline() {
                     Ok(bytes_read_in) => bytes_read_in,
-                    Err(err) => return Err(err),
+                    Err(err) => return Err(err.into()),
                 };
                 if bytes_read_in == 0 { break; }
 
@@ -105,7 +114,7 @@ impl UwUify {
                 let uwu_sentence = self.uwuify_sentence(&utf8_str);
                 match uwu_out_file.write_string_with_newline(&uwu_sentence) {
                     Ok(_) => (),
-                    Err(err) => return Err(err),
+                    Err(err) => return Err(err.into()),
                 };
 
                 uwu_progress_bar.update_progess(bytes_read_in);

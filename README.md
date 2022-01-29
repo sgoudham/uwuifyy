@@ -17,6 +17,9 @@
     * [About](#about)
     * [Features](#features)
     * [Installation](#installation)
+        + [Windows](#windows)
+        + [Linux / macOS](#Linux-/-macOS)
+        + [Rust/Cargo](#Rust-/-Cargo)
     * [Usage](#usage)
         + [Text Input to Text Output](#text-input-to-text-output)
         + [Text Input to File Output](#text-input-to-file-output)
@@ -44,11 +47,91 @@ allows you to _uwu'ify_ text and files from within your own terminal in an _extr
 
 ## Installation
 
-**Binaries will be available soon™**
+Binaries for **Windows**, **macOS** & **Linux** are available with every
+single [release](https://github.com/sgoudham/uwuifyy/releases)
 
-If using Rust's package manager, `Cargo`, all that is needed is
+### Windows
 
-```commandline
+1. Download either `uwuifyy-x86_64-pc-windows-msvc.zip` or `uwuifyy-x86_64-pc-windows-gnu.zip`
+
+
+2. Extract into `\bin` folder at `C:\your\path\here\`
+
+```
+C:
+|__your
+    |__path
+        |__here
+            |__bin
+                |__uwuifyy.exe
+```
+
+3. Set `uwuifyy.exe` in your path to access it globally
+
+```shell
+setx path "%path%;C:\your\path\here\bin"
+```
+
+4. Refresh command line and verify installation
+
+```shell
+uwuifyy --help
+```
+
+### Linux / macOS
+
+1. Download `uwuifyy-x86_64-unknown-linux-gnu.tar.gz` or `uwuifyy-x86_64-unknown-linux-musl.tar.gz`
+   or `uwuifyy-x86_64-apple-darwin.tar.gz`
+
+
+2. Extract into your local directory
+
+```shell
+# Linux
+tar -xf uwuifyy-x86_64-unknown-linux-gnu.tar.gz
+tar -xf uwuifyy-x86_64-unknown-linux-musl.tar.gz
+
+# macOS
+tar -xf uwuifyy-x86_64-apple-darwin.tar.gz
+```
+
+3. Move into `~/bin`
+
+```shell
+# Create ~/bin if it does not exist
+mkdir -p ~/bin
+mv uwuifyy ~/bin
+```
+
+4. Set permissions for executable
+
+```shell
+chmod 755 ~/bin/uwuifyy
+```
+
+5. Update `PATH` to use globally
+
+```shell
+# Linux
+echo 'export PATH=~/bin:$PATH' >> ~/.bashrc 
+source ~/.bashrc
+
+# macOS
+echo 'export PATH=~/bin:$PATH' >> ~/.bash_profile
+source ~/.bash_profile
+```
+
+6. Verify installation
+
+```shell
+uwuifyy --help
+```
+
+### Rust / Cargo
+
+Alternatively, if using Rust's package manager, `Cargo`, all that is needed is
+
+```shell
 cargo install uwuifyy
 ```
 
@@ -76,15 +159,15 @@ OPTIONS:
 
 ### Text Input to Text Output
 
-```commandline
-C:\Your\Path\Here> uwuifyy --text "According to all known laws of aviation, there is no way a bee should be able to fly."
-> Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd be abwe to *screams* fwy.
+```shell
+uwuifyy --text "According to all known laws of aviation, there is no way a bee should be able to fly."
+  Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd be abwe to *screams* fwy.
 ```
 
 ### Text Input to File Output
 
-```commandline
-C:\Your\Path\Here> uwuifyy --text "According to all known laws of aviation, there is no way a bee should be able to fly." --outfile your/path/here/outfile.txt
+```shell
+uwuifyy --text "According to all known laws of aviation, there is no way a bee should be able to fly." --outfile your/path/here/outfile.txt
   [00:00:00] [############################################################] 104B/104B (0s) UwU'ifying Complete!
 ```
 
@@ -102,8 +185,8 @@ your/path/here/infile.txt
 According to all known laws of aviation, there is no way a bee should be able to fly.
 ```
 
-```commandline
-PS D:\Programming\Personal\uwuifyy> uwuifyy --infile your/path/here/infile.txt --outfile your/path/here/outfile.txt                                                                           
+```shell
+uwuifyy --infile your/path/here/infile.txt --outfile your/path/here/outfile.txt
   [00:00:00] [############################################################] 85B/85B (0s) UwU'ifying Complete! 
 ```
 

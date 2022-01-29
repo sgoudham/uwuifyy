@@ -13,11 +13,11 @@ struct Args {
     text: Option<String>,
 
     /// The file to uwu'ify
-    #[clap(short, long, parse(from_os_str), conflicts_with = "text", requires = "outfile", value_name = "FILE", display_order = 2)]
+    #[clap(short, long, parse(from_os_str), conflicts_with = "text", requires = "outfile", value_name = "FILE", value_hint = clap::ValueHint::FilePath, display_order = 2)]
     infile: Option<std::path::PathBuf>,
 
     /// The file to output uwu'ified text
-    #[clap(short, long, value_name = "FILE", display_order = 3)]
+    #[clap(short, long, value_name = "FILE", value_hint = clap::ValueHint::FilePath, display_order = 3)]
     outfile: Option<String>,
 
     /// The modifier to determine how many words to be uwu'ified
