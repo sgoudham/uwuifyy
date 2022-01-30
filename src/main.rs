@@ -93,9 +93,15 @@ macro_rules! app {
     };
 }
 
+macro_rules! clap_panic {
+    ($e:expr) => {
+        app!().error(ErrorKind::DisplayHelp, $e).exit()
+    };
+}
+
 fn main() {
     std::panic::set_hook(Box::new(|info| {
-        app!().error(ErrorKind::DisplayHelp, info).exit();
+        clap_panic!(info);
     }));
     let matches = app!().get_matches();
 
@@ -112,7 +118,7 @@ fn main() {
     )
     .uwuify()
     {
-        Err(e) => panic!("{}", e),
+        Err(e) => clap_panic!(e),
         _ => {}
     };
 }
