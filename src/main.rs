@@ -19,6 +19,7 @@ macro_rules! app {
                     .help("Text to uwu'ify")
                     .short('t')
                     .long("text")
+                    .value_name("TEXT")
                     .required_unless_present_all(["infile", "outfile"])
                     .display_order(1),
             )
