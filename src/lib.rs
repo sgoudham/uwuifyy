@@ -1,7 +1,7 @@
 use indicatif::{ProgressBar, ProgressStyle};
 use linkify::{LinkFinder, LinkKind};
 use rand::{Rng, RngCore, SeedableRng};
-use rand_xoshiro::{Xoshiro256Plus, Xoshiro256PlusPlus};
+use rand_xoshiro::Xoshiro256Plus;
 use std::fs::File;
 use std::io::{BufWriter, Error, Write};
 use std::path::Path;
@@ -34,8 +34,7 @@ pub struct UwUify<'a> {
     faces: f64,
     actions: f64,
     stutters: f64,
-    floating_rng: Xoshiro256Plus,
-    int_rng: Xoshiro256PlusPlus,
+    rng: Xoshiro256Plus,
     linkify: LinkFinder,
 }
 
@@ -49,8 +48,7 @@ impl<'a> Default for UwUify<'a> {
             faces: 0.05,
             actions: 0.125,
             stutters: 0.225,
-            floating_rng: Xoshiro256Plus::seed_from_u64(69),
-            int_rng: Xoshiro256PlusPlus::seed_from_u64(420),
+            rng: Xoshiro256Plus::seed_from_u64(69),
             linkify: LinkFinder::new(),
         }
     }
@@ -81,8 +79,7 @@ impl<'a> UwUify<'a> {
         };
 
         if random {
-            uwuify.floating_rng = Xoshiro256Plus::seed_from_u64(rand::rngs::OsRng.next_u64());
-            uwuify.int_rng = Xoshiro256PlusPlus::seed_from_u64(rand::rngs::OsRng.next_u64());
+            uwuify.rng = Xoshiro256Plus::seed_from_u64(rand::rngs::OsRng.next_u64());
         }
 
         if let Some(words) = words {
@@ -162,16 +159,16 @@ impl<'a> UwUify<'a> {
             line.split_whitespace()
                 .map(|f| f.as_bytes())
                 .try_for_each(|word| {
-                    let random_value = self.floating_rng.gen_range(0.0..1.0);
+                    let random_value = self.rng.gen_range(0.0..1.0);
 
                     if random_value <= self.faces {
-                        out.write_all(FACES[self.int_rng.gen_range(0..FACES_SIZE)])?;
+                        out.write_all(FACES[self.rng.gen_range(0..FACES_SIZE)])?;
                         out.write_all(b" ")?;
                     } else if random_value <= self.actions {
-                        out.write_all(ACTIONS[self.int_rng.gen_range(0..ACTIONS_SIZE)])?;
+                        out.write_all(ACTIONS[self.rng.gen_range(0..ACTIONS_SIZE)])?;
                         out.write_all(b" ")?;
                     } else if random_value <= self.stutters {
-                        (0..self.int_rng.gen_range(1..2))
+                        (0..self.rng.gen_range(1..2))
                             .into_iter()
                             .try_for_each(|_| {
                                 match word[0] {
