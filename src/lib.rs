@@ -1,3 +1,5 @@
+#![cfg_attr(test, feature(test))]
+
 use linkify::{LinkFinder, LinkKind};
 use std::error::Error;
 use std::fs::File;
@@ -92,9 +94,14 @@ impl UwUify {
                 uwu_progress_bar.finish("UwU'ifying Complete!");
                 Ok(())
             } else {
+                #[cfg(not(test))]
                 let stdout = std::io::stdout();
+                #[cfg(not(test))]
                 let mut out = UwUOutFile::new(stdout.lock());
+                #[cfg(test)]
+                let mut out = UwUOutFile::new(std::io::sink());
                 self.uwuify_sentence(&self.text, &mut out)?;
+                #[cfg(not(test))]
                 out.write_newline()?;
                 Ok(())
             }
@@ -229,5 +236,26 @@ impl UwUify {
         }
 
         word
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    extern crate test;
+
+    #[bench]
+    fn uwu_bench(b: &mut test::Bencher) {
+        let uwuify = super::UwUify::new(
+            Some(include_str!("test.txt").to_string()),
+            None,
+            None,
+            false,
+            1.0,
+            0.05,
+            0.125,
+            0.225,
+            false,
+        );
+        b.iter(|| uwuify.uwuify());
     }
 }
