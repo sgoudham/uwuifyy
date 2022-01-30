@@ -19,7 +19,7 @@ exclude = [
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name = "uwuify"
+name = "uwuifyy"
 
 [dependencies]
 clap = "3.0.13"

@@ -1,6 +1,6 @@
 use clap::{Arg, ArgGroup, ErrorKind};
 
-use uwuify::UwUify;
+use uwuifyy::UwUify;
 
 macro_rules! app {
     () => {
