@@ -10,18 +10,29 @@ repository = "https://github.com/sgoudham/uwuifyy"
 keywords = ["cli", "uwu", "owo", "uwuify", "anime"]
 categories = ["command-line-utilities"]
 exclude = [
-    "examples/the-complete-works-of-william-shakespeare.txt",
-    "examples/tiktok_app_reviews.csv",
-    "examples/tokyo-2020-olympics-tweets.csv",
-    "examples/uwu/**"
+  "examples/the-complete-works-of-william-shakespeare.txt",
+  "examples/tiktok_app_reviews.csv",
+  "examples/tokyo-2020-olympics-tweets.csv",
+  "examples/uwu/**",
 ]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+name = "uwuifyy"
+
 [dependencies]
-clap = { version = "3.0.10", features = ["derive"] }
+clap = "3.0.13"
 rand = "0.8.4"
-rand_seeder = "0.2.2"
-rand_pcg = "0.3.1"
 indicatif = "0.16.2"
 linkify = "0.8.0"
+rand_xoshiro = "0.6.0"
+memmap = "0.7.0"
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+
+[features]
+bench = []
