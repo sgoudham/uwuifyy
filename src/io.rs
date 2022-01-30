@@ -1,6 +1,6 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Error, Write};
-use std::path::{Path};
+use std::path::Path;
 
 pub struct UwUInFile {
     file_bytes: u64,
@@ -16,17 +16,21 @@ impl UwUInFile {
     pub fn new(path: &Path) -> Result<UwUInFile, Error> {
         let file = match File::open(path) {
             Ok(file) => file,
-            Err(err) => return Err(err)
+            Err(err) => return Err(err),
         };
         let file_metadata = match file.metadata() {
             Ok(file_metadata) => file_metadata,
-            Err(err) => return Err(err)
+            Err(err) => return Err(err),
         };
         let file_bytes = file_metadata.len();
         let reader = BufReader::new(file);
         let buffer = Vec::new();
 
-        Ok(UwUInFile { file_bytes, reader, buffer })
+        Ok(UwUInFile {
+            file_bytes,
+            reader,
+            buffer,
+        })
     }
 
     pub fn read_until_newline(&mut self) -> Result<usize, Error> {
@@ -53,7 +57,7 @@ impl UwUOutFile {
     pub fn new(path: &str) -> Result<UwUOutFile, Error> {
         let file = match File::create(path) {
             Ok(file) => file,
-            Err(err) => return Err(err)
+            Err(err) => return Err(err),
         };
         let writer = BufWriter::new(file);
 

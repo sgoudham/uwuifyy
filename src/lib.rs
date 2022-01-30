@@ -1,19 +1,19 @@
+use linkify::{LinkFinder, LinkKind};
 use std::error::Error;
 use std::path::PathBuf;
-use linkify::{LinkFinder, LinkKind};
 
-use crate::uwuify::constants::ACTIONS;
-use crate::uwuify::constants::ACTIONS_SIZE;
-use crate::uwuify::constants::FACES;
-use crate::uwuify::constants::FACES_SIZE;
-use crate::uwuify::io::{UwUInFile, UwUOutFile};
-use crate::uwuify::progress_bar::UwUProgressBar;
-use crate::uwuify::seeder::UwUSeeder;
+use constants::ACTIONS;
+use constants::ACTIONS_SIZE;
+use constants::FACES;
+use constants::FACES_SIZE;
+use io::{UwUInFile, UwUOutFile};
+use progress_bar::UwUProgressBar;
+use seeder::UwUSeeder;
 
 mod constants;
-mod seeder;
-mod progress_bar;
 mod io;
+mod progress_bar;
+mod seeder;
 
 #[derive(Debug)]
 struct Modifiers {
@@ -35,15 +35,18 @@ pub struct UwUify {
 }
 
 impl UwUify {
-    pub fn new(text: Option<String>,
-               infile: Option<PathBuf>,
-               outfile: Option<String>,
-               supplied_at_runtime: bool,
-               words: f32,
-               faces: f32,
-               actions: f32,
-               stutters: f32,
-               random: bool) -> UwUify { // I dislike this
+    pub fn new(
+        text: Option<String>,
+        infile: Option<PathBuf>,
+        outfile: Option<String>,
+        supplied_at_runtime: bool,
+        words: f32,
+        faces: f32,
+        actions: f32,
+        stutters: f32,
+        random: bool,
+    ) -> UwUify {
+        // I dislike this
 
         let mut linkify = LinkFinder::new();
         linkify.kinds(&[LinkKind::Email, LinkKind::Url]);
@@ -53,7 +56,13 @@ impl UwUify {
             text: text.unwrap_or_default(),
             input: infile.unwrap_or_default(),
             output: outfile.unwrap_or_default(),
-            modifiers: Modifiers { supplied_at_runtime, words, faces, actions, stutters },
+            modifiers: Modifiers {
+                supplied_at_runtime,
+                words,
+                faces,
+                actions,
+                stutters,
+            },
             random,
             linkify,
         }
@@ -67,12 +76,16 @@ impl UwUify {
             // Handle Text Output
             if !self.output.is_empty() {
                 if UwUOutFile::exists(&self.output) {
-                    return Err(format!("File '{}' already exists, aborting operation", &self.output).into());
+                    return Err(format!(
+                        "File '{}' already exists, aborting operation",
+                        &self.output
+                    )
+                    .into());
                 }
 
                 let mut uwu_out_file = match UwUOutFile::new(&self.output) {
                     Ok(uwu_out_file) => uwu_out_file,
-                    Err(err) => return Err(err.into())
+                    Err(err) => return Err(err.into()),
                 };
 
                 let mut uwu_progress_bar = UwUProgressBar::new(uwu_text.len() as u64);
@@ -90,7 +103,9 @@ impl UwUify {
         } else {
             // Handle File I/O
             if UwUOutFile::exists(&self.output) {
-                return Err(format!("File '{}' already exists, aborting operation", &self.output).into());
+                return Err(
+                    format!("File '{}' already exists, aborting operation", &self.output).into(),
+                );
             };
 
             let mut uwu_in_file = match UwUInFile::new(&self.input) {
@@ -99,7 +114,7 @@ impl UwUify {
             };
             let mut uwu_out_file = match UwUOutFile::new(&self.output) {
                 Ok(uwu_out_file) => uwu_out_file,
-                Err(err) => return Err(err.into())
+                Err(err) => return Err(err.into()),
             };
             let mut uwu_progress_bar = UwUProgressBar::new(uwu_in_file.get_file_bytes());
 
@@ -108,7 +123,9 @@ impl UwUify {
                     Ok(bytes_read_in) => bytes_read_in,
                     Err(err) => return Err(err.into()),
                 };
-                if bytes_read_in == 0 { break; }
+                if bytes_read_in == 0 {
+                    break;
+                }
 
                 let utf8_str = uwu_in_file.get_buffer_as_utf8_str();
                 let uwu_sentence = self.uwuify_sentence(&utf8_str);
@@ -128,8 +145,7 @@ impl UwUify {
     }
 
     fn uwuify_sentence(&self, text: &str) -> String {
-        text
-            .split_whitespace()
+        text.split_whitespace()
             .map(|word| {
                 let uwu_word = self.uwuify_word(word.to_string());
                 self.uwuify_spaces(uwu_word)
@@ -144,15 +160,19 @@ impl UwUify {
         }
 
         let mut seeder = UwUSeeder::new(&word, self.random);
-        if seeder.random() > self.modifiers.words { return word; }
+        if seeder.random() > self.modifiers.words {
+            return word;
+        }
 
         let word_bytes = word.as_bytes();
         let uwu_text_count = word.len();
         let mut uwu_text = String::new();
 
         for index in 0..uwu_text_count {
-            let previous_previous_char = *word_bytes.get(index - 2).unwrap_or_else(|| &word_bytes[0]) as char;
-            let previous_char = *word_bytes.get(index - 1).unwrap_or_else(|| &word_bytes[0]) as char;
+            let previous_previous_char =
+                *word_bytes.get(index - 2).unwrap_or_else(|| &word_bytes[0]) as char;
+            let previous_char =
+                *word_bytes.get(index - 1).unwrap_or_else(|| &word_bytes[0]) as char;
             let current_char = word_bytes[index] as char;
 
             match current_char {
@@ -166,15 +186,15 @@ impl UwUify {
                             uwu_text.pop();
                             uwu_text.push_str("uv");
                         }
-                        _ => uwu_text.push(current_char)
-                    }
-                    _ => uwu_text.push(current_char)
-                }
+                        _ => uwu_text.push(current_char),
+                    },
+                    _ => uwu_text.push(current_char),
+                },
                 'A' | 'I' | 'O' | 'U' | 'a' | 'i' | 'o' | 'u' => match previous_char {
                     'N' | 'n' => uwu_text.push_str(format!("y{}", current_char).as_str()),
-                    _ => uwu_text.push(current_char)
-                }
-                _ => uwu_text.push(current_char)
+                    _ => uwu_text.push(current_char),
+                },
+                _ => uwu_text.push(current_char),
             }
         }
 
@@ -192,12 +212,20 @@ impl UwUify {
                 word = format!("{} {}", ACTIONS[seeder.random_int(0, ACTIONS_SIZE)], word);
             } else if random_value <= self.modifiers.stutters {
                 let first_char_stutter = format!("{}-", word.chars().next().unwrap());
-                word = format!("{}{}", first_char_stutter.repeat(seeder.random_int(1, 2)), word);
+                word = format!(
+                    "{}{}",
+                    first_char_stutter.repeat(seeder.random_int(1, 2)),
+                    word
+                );
             }
         } else {
             if random_value <= self.modifiers.stutters {
                 let first_char_stutter = format!("{}-", word.chars().next().unwrap());
-                word = format!("{}{}", first_char_stutter.repeat(seeder.random_int(1, 2)), word);
+                word = format!(
+                    "{}{}",
+                    first_char_stutter.repeat(seeder.random_int(1, 2)),
+                    word
+                );
             }
             if random_value <= self.modifiers.faces {
                 word = format!("{} {}", FACES[seeder.random_int(0, FACES_SIZE)], word);
