@@ -93,13 +93,14 @@ macro_rules! app {
     };
 }
 
-fn main() -> Result<(), std::io::Error> {
+fn main() {
     std::panic::set_hook(Box::new(|info| {
         app!().error(ErrorKind::DisplayHelp, info).exit();
     }));
     let matches = app!().get_matches();
 
-    UwUify::new(
+    // panicing here ensures that the error is passed to the hook above instead of to stdout.
+    match UwUify::new(
         matches.value_of("text"),
         matches.value_of("infile"),
         matches.value_of("outfile"),
@@ -109,8 +110,11 @@ fn main() -> Result<(), std::io::Error> {
         matches.value_of("stutters"),
         matches.is_present("random"),
     )
-    .uwuify()?;
-    Ok(())
+    .uwuify()
+    {
+        Err(e) => panic!("{}", e),
+        _ => {}
+    };
 }
 
 fn is_between_zero_and_one(input: &str) -> Result<(), &'static str> {
