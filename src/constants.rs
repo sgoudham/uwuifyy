@@ -1,7 +1,19 @@
 pub const FACES_SIZE: usize = 14;
 pub const FACES: [&[u8]; FACES_SIZE] = [
-    b"OwO", b"UwU", b">w<", b"^w^", b"^-^", b":3", b"x3", b"xDD", b";;w;;", b">_<", b">_>", b"^.^",
-    b":33", b"uWu",
+    b"OwO",
+    b"UwU",
+    b">w<",
+    b"^w^",
+    b"^-^",
+    b":3",
+    b"x3",
+    b"xDD",
+    b";;w;;",
+    b">_<",
+    b">_>", 
+    b"^.^",
+    b":33",
+    b"uWu",
 ];
 
 pub const ACTIONS_SIZE: usize = 17;
