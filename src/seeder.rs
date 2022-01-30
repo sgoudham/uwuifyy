@@ -15,7 +15,7 @@ impl UwUSeeder {
     #[inline]
     pub fn new(word: &[u8], random: bool) -> UwUSeeder {
         let entropy = if !random {
-            let mut hasher = ahash::AHasher::default();
+            let mut hasher = ahash::AHasher::new_with_keys(1234, 5678);
             hasher.write(word);
             hasher.finish()
         } else {
