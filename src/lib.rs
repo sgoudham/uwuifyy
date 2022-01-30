@@ -150,57 +150,51 @@ impl<'a> UwUify<'a> {
     }
 
     fn uwuify_sentence<T: Write>(&self, text: &str, out: &mut T) -> Result<(), std::io::Error> {
-        text.as_bytes()
-            .split(|w| matches!(*w, b'\t' | b'\x0C' | b'\r' | b' '))
-            .scan([].as_ref(), |scan, i| {
-                let ret = i != &[b' '];
-                *scan = i;
-                if ret {
-                    Some(i)
-                } else {
-                    None
-                }
-            })
-            .try_for_each(|word| {
-                let mut seeder = UwUSeeder::new(word, self.random);
-                let random_value = seeder.random();
+        text.lines().try_for_each(|line| {
+            line.split_whitespace()
+                .map(|f| f.as_bytes())
+                .try_for_each(|word| {
+                    let mut seeder = UwUSeeder::new(word, self.random);
+                    let random_value = seeder.random();
 
-                if random_value <= self.faces {
-                    out.write_all(FACES[seeder.random_int(0..FACES_SIZE)])?;
-                    out.write_all(b" ")?;
-                } else if random_value <= self.actions {
-                    out.write_all(ACTIONS[seeder.random_int(0..ACTIONS_SIZE)])?;
-                    out.write_all(b" ")?;
-                } else if random_value <= self.stutters {
-                    (0..seeder.random_int(1..2)).into_iter().try_for_each(|_| {
-                        out.write_all(&[word[0]])?;
-                        out.write_all(b"-")
-                    })?;
-                }
+                    if random_value <= self.faces {
+                        out.write_all(FACES[seeder.random_int(0..FACES_SIZE)])?;
+                        out.write_all(b" ")?;
+                    } else if random_value <= self.actions {
+                        out.write_all(ACTIONS[seeder.random_int(0..ACTIONS_SIZE)])?;
+                        out.write_all(b" ")?;
+                    } else if random_value <= self.stutters {
+                        (0..seeder.random_int(1..2)).into_iter().try_for_each(|_| {
+                            out.write_all(&[word[0]])?;
+                            out.write_all(b"-")
+                        })?;
+                    }
 
-                if self
-                    .linkify
-                    .links(unsafe { std::str::from_utf8_unchecked(word) })
-                    .count()
-                    > 0
-                    || random_value > self.words
-                {
-                    out.write_all(word)?;
-                } else {
-                    (0..word.len()).try_for_each(|index| match word[index] {
-                        b'L' | b'R' => out.write_all(b"W"),
-                        b'l' | b'r' => out.write_all(b"w"),
-                        b'E' | b'e' | b'A' | b'I' | b'O' | b'U' | b'a' | b'i' | b'o' | b'u' => {
-                            match word.get(index - 1).unwrap_or(&word[0]) {
-                                b'N' | b'n' => out.write_all(&[b'y', word[index]]),
-                                _ => out.write_all(&[word[index]]),
+                    if self
+                        .linkify
+                        .links(unsafe { std::str::from_utf8_unchecked(word) })
+                        .count()
+                        > 0
+                        || random_value > self.words
+                    {
+                        out.write_all(word)?;
+                    } else {
+                        (0..word.len()).try_for_each(|index| match word[index] {
+                            b'L' | b'R' => out.write_all(b"W"),
+                            b'l' | b'r' => out.write_all(b"w"),
+                            b'E' | b'e' | b'A' | b'I' | b'O' | b'U' | b'a' | b'i' | b'o' | b'u' => {
+                                match word.get(index - 1).unwrap_or(&word[0]) {
+                                    b'N' | b'n' => out.write_all(&[b'y', word[index]]),
+                                    _ => out.write_all(&[word[index]]),
+                                }
                             }
-                        }
-                        _ => out.write_all(&[word[index]]),
-                    })?;
-                }
-                out.write_all(b" ")
-            })
+                            _ => out.write_all(&[word[index]]),
+                        })?;
+                    }
+                    out.write_all(b" ")
+                })?;
+            out.write_all(b"\n")
+        })
     }
 }
 
