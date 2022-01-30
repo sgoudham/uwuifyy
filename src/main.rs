@@ -2,12 +2,6 @@ use clap::{Arg, ArgGroup, ErrorKind};
 
 use uwuify::UwUify;
 
-macro_rules! modifiers_supplied_at_runtime {
-    ($faces_occurrences:expr,$actions_occurrences:expr,$stutters_occurrences:expr) => {
-        $faces_occurrences > 0 || $actions_occurrences > 0 || $stutters_occurrences > 0
-    };
-}
-
 macro_rules! app {
     () => {
         clap::App::new(env!("CARGO_PKG_NAME"))
@@ -103,17 +97,12 @@ fn main() {
 
     match UwUify::new(
         matches.value_of("text"),
-        matches.value_of("infile").map(|f| std::path::Path::new(f)),
+        matches.value_of("infile"),
         matches.value_of("outfile"),
-        modifiers_supplied_at_runtime!(
-            matches.occurrences_of("faces"),
-            matches.occurrences_of("actions"),
-            matches.occurrences_of("stutters")
-        ),
-        matches.value_of_t_or_exit("words"),
-        matches.value_of_t_or_exit("faces"),
-        matches.value_of_t_or_exit("actions"),
-        matches.value_of_t_or_exit("stutters"),
+        matches.value_of("words"),
+        matches.value_of("faces"),
+        matches.value_of("actions"),
+        matches.value_of("stutters"),
         matches.is_present("random"),
     )
     .uwuify()

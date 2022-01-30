@@ -9,7 +9,7 @@ use constants::ACTIONS;
 use constants::ACTIONS_SIZE;
 use constants::FACES;
 use constants::FACES_SIZE;
-use io::{UwUInFile, UwUOutFile};
+use io::UwUOutFile;
 use progress_bar::UwUProgressBar;
 use seeder::UwUSeeder;
 
@@ -19,34 +19,43 @@ mod progress_bar;
 mod seeder;
 
 #[derive(Debug)]
-struct Modifiers {
-    supplied_at_runtime: bool,
+pub struct UwUify<'a> {
+    text: &'a str,
+    input: &'a str,
+    output: &'a str,
     words: f64,
     faces: f64,
     actions: f64,
     stutters: f64,
-}
-
-#[derive(Debug)]
-pub struct UwUify<'a> {
-    text: &'a str,
-    input: &'a Path,
-    output: &'a str,
-    modifiers: Modifiers,
     random: bool,
     linkify: LinkFinder,
+}
+
+impl<'a> Default for UwUify<'a> {
+    fn default() -> Self {
+        Self {
+            text: "",
+            input: "",
+            output: "",
+            words: 1.0,
+            faces: 0.05,
+            actions: 0.125,
+            stutters: 0.225,
+            random: false,
+            linkify: LinkFinder::new(),
+        }
+    }
 }
 
 impl<'a> UwUify<'a> {
     pub fn new(
         text: Option<&'a str>,
-        infile: Option<&'a Path>,
+        infile: Option<&'a str>,
         outfile: Option<&'a str>,
-        supplied_at_runtime: bool,
-        words: f64,
-        faces: f64,
-        actions: f64,
-        stutters: f64,
+        words: Option<&'a str>,
+        faces: Option<&'a str>,
+        actions: Option<&'a str>,
+        stutters: Option<&'a str>,
         random: bool,
     ) -> UwUify<'a> {
         // I dislike this
@@ -54,21 +63,28 @@ impl<'a> UwUify<'a> {
         let mut linkify = LinkFinder::new();
         linkify.kinds(&[LinkKind::Email, LinkKind::Url]);
         linkify.url_must_have_scheme(false);
-
-        UwUify {
+        let mut uwuify = UwUify {
             text: text.unwrap_or_default(),
-            input: infile.unwrap_or(Path::new("")),
+            input: infile.unwrap_or_default(),
             output: outfile.unwrap_or_default(),
-            modifiers: Modifiers {
-                supplied_at_runtime,
-                words,
-                faces,
-                actions,
-                stutters,
-            },
             random,
             linkify,
+            ..Default::default()
+        };
+
+        if let Some(words) = words {
+            uwuify.words = words.parse::<f64>().unwrap();
         }
+        if let Some(faces) = faces {
+            uwuify.faces = faces.parse::<f64>().unwrap();
+        }
+        if let Some(actions) = actions {
+            uwuify.actions = actions.parse::<f64>().unwrap();
+        }
+        if let Some(stutters) = stutters {
+            uwuify.stutters = stutters.parse::<f64>().unwrap();
+        }
+        uwuify
     }
 
     pub fn uwuify(&self) -> Result<(), Error> {
@@ -84,11 +100,9 @@ impl<'a> UwUify<'a> {
                 }
 
                 let mut uwu_out_file = UwUOutFile::new(File::create(&self.output)?);
+                let uwu_progress_bar = UwUProgressBar::new();
                 self.uwuify_sentence(&self.text, &mut uwu_out_file)?;
 
-                let mut uwu_progress_bar = UwUProgressBar::new(self.text.len() as u64);
-
-                uwu_progress_bar.update_progess(self.text.len());
                 uwu_progress_bar.finish("UwU'ifying Complete!");
                 Ok(())
             } else {
@@ -100,7 +114,7 @@ impl<'a> UwUify<'a> {
                 let mut out = UwUOutFile::new(std::io::sink());
                 self.uwuify_sentence(&self.text, &mut out)?;
                 #[cfg(not(test))]
-                out.write_newline()?;
+                out.write_bytes(b"\n")?;
                 Ok(())
             }
         } else {
@@ -112,23 +126,17 @@ impl<'a> UwUify<'a> {
                 ));
             }
 
-            let mut uwu_in_file = UwUInFile::new(&self.input)?;
-            let mut uwu_out_file = UwUOutFile::new(File::create(&self.output)?);
-            let mut uwu_progress_bar = UwUProgressBar::new(uwu_in_file.get_file_bytes());
-
-            loop {
-                let bytes_read_in = uwu_in_file.read_until_newline()?;
-                if bytes_read_in != 0 {
-                    self.uwuify_sentence(&uwu_in_file.buffer, &mut uwu_out_file)?;
-                    uwu_out_file.write_newline()?;
-
-                    uwu_progress_bar.update_progess(bytes_read_in);
-                    uwu_in_file.clear_buffer();
-                } else {
-                    uwu_progress_bar.finish("UwU'ifying Complete!");
-                    return Ok(());
-                }
-            }
+            let uwu_progress_bar = UwUProgressBar::new();
+            self.uwuify_sentence(
+                unsafe {
+                    std::str::from_utf8_unchecked(
+                        memmap::Mmap::map(&File::open(&self.input)?)?.as_ref(),
+                    )
+                },
+                &mut UwUOutFile::new(File::create(&self.output)?),
+            )?;
+            uwu_progress_bar.finish("UwU'ifying Complete!");
+            Ok(())
         }
     }
 
@@ -137,97 +145,66 @@ impl<'a> UwUify<'a> {
         text: &str,
         out: &mut UwUOutFile<T>,
     ) -> Result<(), std::io::Error> {
-        text.split_whitespace().try_for_each(|word| {
-            self.uwuify_word(word, out)?;
-            out.write_string(" ")
-        })
-    }
+        text.as_bytes()
+            .split(|w| matches!(*w, b'\t' | b'\x0C' | b'\r' | b' '))
+            .try_for_each(|word| {
+                let mut seeder = UwUSeeder::new(word, self.random);
+                let random_value = seeder.random();
 
-    fn uwuify_word<T: Write>(&self, word: &str, out: &mut UwUOutFile<T>) -> Result<(), Error> {
-        let mut seeder = UwUSeeder::new(word, self.random);
-        let random_value = seeder.random();
+                if random_value <= self.faces {
+                    out.write_bytes(FACES[seeder.random_int(0..FACES_SIZE)])?;
+                    out.write_bytes(b" ")?;
+                } else if random_value <= self.actions {
+                    out.write_bytes(ACTIONS[seeder.random_int(0..ACTIONS_SIZE)])?;
+                    out.write_bytes(b" ")?;
+                } else if random_value <= self.stutters {
+                    (0..seeder.random_int(1..2)).into_iter().try_for_each(|_| {
+                        out.write_bytes(&word[0..1])?;
+                        out.write_bytes(b"-")
+                    })?;
+                }
 
-        if !self.modifiers.supplied_at_runtime {
-            if random_value <= self.modifiers.faces {
-                out.write_string(FACES[seeder.random_int(0..FACES_SIZE)])?;
-                out.write_bytes(b" ")?;
-            } else if random_value <= self.modifiers.actions {
-                out.write_string(ACTIONS[seeder.random_int(0..ACTIONS_SIZE)])?;
-                out.write_bytes(b" ")?;
-            } else if random_value <= self.modifiers.stutters {
-                (0..seeder.random_int(1..2)).into_iter().try_for_each(|_| {
-                    out.write_bytes(&word.as_bytes()[0..1])?;
-                    out.write_bytes(b"-")
-                })?;
-            }
-        } else {
-            if random_value <= self.modifiers.stutters {
-                (0..seeder.random_int(1..2)).into_iter().try_for_each(|_| {
-                    out.write_bytes(&word.as_bytes()[0..1])?;
-                    out.write_bytes(b"-")
-                })?;
-            }
-            if random_value <= self.modifiers.faces {
-                out.write_string(FACES[seeder.random_int(0..FACES_SIZE)])?;
-                out.write_bytes(b" ")?;
-            }
-            if random_value <= self.modifiers.actions {
-                out.write_string(ACTIONS[seeder.random_int(0..ACTIONS_SIZE)])?;
-                out.write_bytes(b" ")?;
-            }
-        }
-
-        if self.linkify.links(word).count() > 0 {
-            return out.write_string(word);
-        }
-
-        let mut seeder = UwUSeeder::new(word, self.random);
-        if seeder.random() > self.modifiers.words {
-            return out.write_string(word);
-        }
-
-        let word_bytes = word.as_bytes();
-        let uwu_text_count = word.len();
-
-        (0..uwu_text_count).try_for_each(|index| {
-            let previous_char =
-                *word_bytes.get(index - 1).unwrap_or_else(|| &word_bytes[0]) as char;
-            let current_char = word_bytes[index] as char;
-
-            match current_char {
-                'L' | 'R' => out.write_bytes(b"W"),
-                'l' | 'r' => out.write_bytes(b"w"),
-                'E' | 'e' => match previous_char {
-                    'N' | 'n' => out.write_fmt(format_args!("y{}", current_char)),
-                    _ => out.write_fmt(format_args!("{}", current_char)),
-                },
-                'A' | 'I' | 'O' | 'U' | 'a' | 'i' | 'o' | 'u' => match previous_char {
-                    'N' | 'n' => out.write_fmt(format_args!("y{}", current_char)),
-                    _ => out.write_fmt(format_args!("{}", current_char)),
-                },
-                _ => out.write_fmt(format_args!("{}", current_char)),
-            }
-        })
+                if self
+                    .linkify
+                    .links(unsafe { std::str::from_utf8_unchecked(word) })
+                    .count()
+                    > 0
+                    || random_value > self.words
+                {
+                    out.write_bytes(word)?;
+                } else {
+                    (0..word.len()).try_for_each(|index| match word[index] {
+                        b'L' | b'R' => out.write_bytes(b"W"),
+                        b'l' | b'r' => out.write_bytes(b"w"),
+                        b'E' | b'e' | b'A' | b'I' | b'O' | b'U' | b'a' | b'i' | b'o' | b'u' => {
+                            match word.get(index - 1).unwrap_or(&word[0]) {
+                                b'N' | b'n' => out.write_bytes(&[b'y', word[index]]),
+                                _ => out.write_bytes(&[word[index]]),
+                            }
+                        }
+                        _ => out.write_bytes(&[word[index]]),
+                    })?;
+                }
+                out.write_bytes(b" ")
+            })
     }
 }
 
 #[cfg(test)]
 mod tests {
     extern crate test;
+    use linkify::{LinkFinder, LinkKind};
 
     #[bench]
     fn uwu_bench(b: &mut test::Bencher) {
-        let uwuify = super::UwUify::new(
-            Some(include_str!("test.txt")),
-            None,
-            None,
-            false,
-            1.0,
-            0.05,
-            0.125,
-            0.225,
-            false,
-        );
+        let mut linkify = LinkFinder::new();
+        linkify.kinds(&[LinkKind::Email, LinkKind::Url]);
+        linkify.url_must_have_scheme(false);
+        let uwuify = super::UwUify {
+            text: include_str!("test.txt"),
+            linkify,
+            ..Default::default()
+        };
         b.iter(|| uwuify.uwuify());
     }
 }
