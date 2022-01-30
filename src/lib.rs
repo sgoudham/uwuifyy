@@ -101,7 +101,7 @@ impl<'a> UwUify<'a> {
 
                 let mut uwu_out_file = UwUOutFile::new(File::create(&self.output)?);
                 let uwu_progress_bar = UwUProgressBar::new();
-                self.uwuify_sentence(&self.text, &mut uwu_out_file)?;
+                self.uwuify_sentence(self.text, &mut uwu_out_file)?;
 
                 uwu_progress_bar.finish("UwU'ifying Complete!");
                 Ok(())
@@ -112,7 +112,7 @@ impl<'a> UwUify<'a> {
                 let mut out = UwUOutFile::new(stdout.lock());
                 #[cfg(test)]
                 let mut out = UwUOutFile::new(std::io::sink());
-                self.uwuify_sentence(&self.text, &mut out)?;
+                self.uwuify_sentence(self.text, &mut out)?;
                 #[cfg(not(test))]
                 out.write_bytes(b"\n")?;
                 Ok(())
