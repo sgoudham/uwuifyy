@@ -2,6 +2,12 @@ use clap::{ArgGroup, ErrorKind, IntoApp, Parser};
 
 use uwuify::UwUify;
 
+macro_rules! modifiers_supplied_at_runtime {
+    ($faces_occurrences:expr,$actions_occurrences:expr,$stutters_occurrences:expr) => {
+        $faces_occurrences > 0 || $actions_occurrences > 0 || $stutters_occurrences > 0
+    };
+}
+
 #[derive(Parser)]
 #[clap(author, version, about, long_about = None)]
 #[clap(group(ArgGroup::new("uwu").required(true).args(& ["text", "infile"]),))]
@@ -40,30 +46,28 @@ struct Args {
 }
 
 fn main() {
-    let args = Args::parse();
     let matches = Args::into_app().get_matches();
 
-    let supplied_at_runtime = modifiers_supplied_at_runtime(
-        matches.occurrences_of("faces"),
-        matches.occurrences_of("actions"),
-        matches.occurrences_of("stutters"),
-    );
     let uwuify = UwUify::new(
-        args.text,
-        args.infile,
-        args.outfile,
-        supplied_at_runtime,
-        args.words,
-        args.faces,
-        args.actions,
-        args.stutters,
-        args.random,
+        matches.value_of("text"),
+        matches.value_of("infile").map(|f| std::path::Path::new(f)),
+        matches.value_of("outfile"),
+        modifiers_supplied_at_runtime!(
+            matches.occurrences_of("faces"),
+            matches.occurrences_of("actions"),
+            matches.occurrences_of("stutters")
+        ),
+        matches.value_of_t("words").unwrap_or_else(|e| e.exit()),
+        matches.value_of_t("faces").unwrap_or_else(|e| e.exit()),
+        matches.value_of_t("actions").unwrap_or_else(|e| e.exit()),
+        matches.value_of_t("stutters").unwrap_or_else(|e| e.exit()),
+        matches.value_of_t("random").unwrap_or_else(|e| e.exit()),
     );
     match uwuify.uwuify() {
         Ok(_) => (),
         Err(err) => {
             let mut app = Args::into_app();
-            app.error(ErrorKind::DisplayHelp, err.to_string()).exit();
+            app.error(ErrorKind::DisplayHelp, err).exit();
         }
     }
 }
@@ -78,12 +82,4 @@ fn is_between_zero_and_one(input: &str) -> Result<(), &'static str> {
         return Ok(());
     }
     Err("The value must be between 0.0 and 1.0")
-}
-
-fn modifiers_supplied_at_runtime(
-    faces_occurrences: u64,
-    actions_occurrences: u64,
-    stutters_occurrences: u64,
-) -> bool {
-    faces_occurrences > 0 || actions_occurrences > 0 || stutters_occurrences > 0
 }

@@ -1,10 +1,9 @@
 #![cfg_attr(test, feature(test))]
 
 use linkify::{LinkFinder, LinkKind};
-use std::error::Error;
 use std::fs::File;
-use std::io::Write;
-use std::path::PathBuf;
+use std::io::{Error, Write};
+use std::path::Path;
 
 use constants::ACTIONS;
 use constants::ACTIONS_SIZE;
@@ -29,27 +28,27 @@ struct Modifiers {
 }
 
 #[derive(Debug)]
-pub struct UwUify {
-    text: String,
-    input: PathBuf,
-    output: String,
+pub struct UwUify<'a> {
+    text: &'a str,
+    input: &'a Path,
+    output: &'a str,
     modifiers: Modifiers,
     random: bool,
     linkify: LinkFinder,
 }
 
-impl UwUify {
+impl<'a> UwUify<'a> {
     pub fn new(
-        text: Option<String>,
-        infile: Option<PathBuf>,
-        outfile: Option<String>,
+        text: Option<&'a str>,
+        infile: Option<&'a Path>,
+        outfile: Option<&'a str>,
         supplied_at_runtime: bool,
         words: f64,
         faces: f64,
         actions: f64,
         stutters: f64,
         random: bool,
-    ) -> UwUify {
+    ) -> UwUify<'a> {
         // I dislike this
 
         let mut linkify = LinkFinder::new();
@@ -58,7 +57,7 @@ impl UwUify {
 
         UwUify {
             text: text.unwrap_or_default(),
-            input: infile.unwrap_or_default(),
+            input: infile.unwrap_or(Path::new("")),
             output: outfile.unwrap_or_default(),
             modifiers: Modifiers {
                 supplied_at_runtime,
@@ -72,17 +71,16 @@ impl UwUify {
         }
     }
 
-    pub fn uwuify(&self) -> Result<(), Box<dyn Error>> {
+    pub fn uwuify(&self) -> Result<(), Error> {
         // Handle Text
         if !self.text.is_empty() {
             // Handle Text Output
             if !self.output.is_empty() {
-                if std::path::Path::new(&self.output).exists() {
-                    return Err(format!(
-                        "File '{}' already exists, aborting operation",
-                        &self.output
-                    )
-                    .into());
+                if Path::new(&self.output).exists() {
+                    return Err(Error::new(
+                        std::io::ErrorKind::AlreadyExists,
+                        format!("File '{}' already exists, aborting operation", &self.output),
+                    ));
                 }
 
                 let mut uwu_out_file = UwUOutFile::new(File::create(&self.output)?);
@@ -107,10 +105,11 @@ impl UwUify {
             }
         } else {
             // Handle File I/O
-            if std::path::Path::new(&self.output).exists() {
-                return Err(
-                    format!("File '{}' already exists, aborting operation", &self.output).into(),
-                );
+            if Path::new(&self.output).exists() {
+                return Err(Error::new(
+                    std::io::ErrorKind::AlreadyExists,
+                    format!("File '{}' already exists, aborting operation", &self.output),
+                ));
             }
 
             let mut uwu_in_file = UwUInFile::new(&self.input)?;
@@ -144,11 +143,7 @@ impl UwUify {
         })
     }
 
-    fn uwuify_word<T: Write>(
-        &self,
-        word: &str,
-        out: &mut UwUOutFile<T>,
-    ) -> Result<(), std::io::Error> {
+    fn uwuify_word<T: Write>(&self, word: &str, out: &mut UwUOutFile<T>) -> Result<(), Error> {
         let mut seeder = UwUSeeder::new(word, self.random);
         let random_value = seeder.random();
 
@@ -223,7 +218,7 @@ mod tests {
     #[bench]
     fn uwu_bench(b: &mut test::Bencher) {
         let uwuify = super::UwUify::new(
-            Some(include_str!("test.txt").to_string()),
+            Some(include_str!("test.txt")),
             None,
             None,
             false,

@@ -22,7 +22,7 @@ exclude = [
 name = "uwuify"
 
 [dependencies]
-clap = { version = "3.0.10", features = ["derive"] }
+clap = { version = "3.0.13", features = ["derive"] }
 rand = "0.8.4"
 indicatif = "0.16.2"
 linkify = "0.8.0"
