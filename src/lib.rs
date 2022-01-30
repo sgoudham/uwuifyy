@@ -172,7 +172,11 @@ impl<'a> UwUify<'a> {
                         (0..self.int_rng.gen_range(1..2))
                             .into_iter()
                             .try_for_each(|_| {
-                                out.write_all(&[word[0]])?;
+                                match word[0] {
+                                    b'L' | b'R' => out.write_all(b"W"),
+                                    b'l' | b'r' => out.write_all(b"w"),
+                                    b => out.write_all(&[b]),
+                                }?;
                                 out.write_all(b"-")
                             })?;
                     }
@@ -195,7 +199,7 @@ impl<'a> UwUify<'a> {
                                     _ => out.write_all(&[word[index]]),
                                 }
                             }
-                            _ => out.write_all(&[word[index]]),
+                            b => out.write_all(&[b]),
                         })?;
                     }
                     out.write_all(b" ")
