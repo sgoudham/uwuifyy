@@ -147,6 +147,15 @@ impl<'a> UwUify<'a> {
     ) -> Result<(), std::io::Error> {
         text.as_bytes()
             .split(|w| matches!(*w, b'\t' | b'\x0C' | b'\r' | b' '))
+            .scan([].as_ref(), |scan, i| {
+                let ret = i != &[b' '];
+                *scan = i;
+                if ret {
+                    Some(i)
+                } else {
+                    None
+                }
+            })
             .try_for_each(|word| {
                 let mut seeder = UwUSeeder::new(word, self.random);
                 let random_value = seeder.random();
