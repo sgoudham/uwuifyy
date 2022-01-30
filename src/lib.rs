@@ -1,5 +1,3 @@
-#![cfg_attr(test, feature(test))]
-
 use indicatif::{ProgressBar, ProgressStyle};
 use linkify::{LinkFinder, LinkKind};
 use rand::{Rng, RngCore, SeedableRng};
@@ -210,25 +208,5 @@ impl<'a> UwUify<'a> {
                 })?;
             out.write_all(b"\n")
         })
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    extern crate test;
-    use linkify::{LinkFinder, LinkKind};
-
-    #[bench]
-    fn uwu_bench(b: &mut test::Bencher) {
-        let mut linkify = LinkFinder::new();
-        linkify.kinds(&[LinkKind::Email, LinkKind::Url]);
-        linkify.url_must_have_scheme(false);
-        let mut uwuify = super::UwUify {
-            text: include_str!("test.txt"),
-            linkify,
-            ..Default::default()
-        };
-
-        b.iter(|| uwuify.uwuify());
     }
 }
