@@ -1,5 +1,7 @@
 use linkify::{LinkFinder, LinkKind};
 use std::error::Error;
+use std::fs::File;
+use std::io::Write;
 use std::path::PathBuf;
 
 use constants::ACTIONS;
@@ -18,10 +20,10 @@ mod seeder;
 #[derive(Debug)]
 struct Modifiers {
     supplied_at_runtime: bool,
-    words: f32,
-    faces: f32,
-    actions: f32,
-    stutters: f32,
+    words: f64,
+    faces: f64,
+    actions: f64,
+    stutters: f64,
 }
 
 #[derive(Debug)]
@@ -40,10 +42,10 @@ impl UwUify {
         infile: Option<PathBuf>,
         outfile: Option<String>,
         supplied_at_runtime: bool,
-        words: f32,
-        faces: f32,
-        actions: f32,
-        stutters: f32,
+        words: f64,
+        faces: f64,
+        actions: f64,
+        stutters: f64,
         random: bool,
     ) -> UwUify {
         // I dislike this
@@ -71,11 +73,9 @@ impl UwUify {
     pub fn uwuify(&self) -> Result<(), Box<dyn Error>> {
         // Handle Text
         if !self.text.is_empty() {
-            let uwu_text = self.uwuify_sentence(&self.text);
-
             // Handle Text Output
             if !self.output.is_empty() {
-                if UwUOutFile::exists(&self.output) {
+                if std::path::Path::new(&self.output).exists() {
                     return Err(format!(
                         "File '{}' already exists, aborting operation",
                         &self.output
@@ -83,78 +83,67 @@ impl UwUify {
                     .into());
                 }
 
-                let mut uwu_out_file = match UwUOutFile::new(&self.output) {
-                    Ok(uwu_out_file) => uwu_out_file,
-                    Err(err) => return Err(err.into()),
-                };
+                let mut uwu_out_file = UwUOutFile::new(File::create(&self.output)?);
+                self.uwuify_sentence(&self.text, &mut uwu_out_file)?;
 
-                let mut uwu_progress_bar = UwUProgressBar::new(uwu_text.len() as u64);
+                let mut uwu_progress_bar = UwUProgressBar::new(self.text.len() as u64);
 
-                match uwu_out_file.write_string(&uwu_text) {
-                    Ok(_) => (),
-                    Err(err) => return Err(err.into()),
-                };
-
-                uwu_progress_bar.update_progess(uwu_text.len());
+                uwu_progress_bar.update_progess(self.text.len());
                 uwu_progress_bar.finish("UwU'ifying Complete!");
+                Ok(())
             } else {
-                println!("{}", uwu_text);
+                let stdout = std::io::stdout();
+                let mut out = UwUOutFile::new(stdout.lock());
+                self.uwuify_sentence(&self.text, &mut out)?;
+                out.write_newline()?;
+                Ok(())
             }
         } else {
             // Handle File I/O
-            if UwUOutFile::exists(&self.output) {
+            if std::path::Path::new(&self.output).exists() {
                 return Err(
                     format!("File '{}' already exists, aborting operation", &self.output).into(),
                 );
-            };
+            }
 
-            let mut uwu_in_file = match UwUInFile::new(&self.input) {
-                Ok(uwu_in_file) => uwu_in_file,
-                Err(err) => return Err(err.into()),
-            };
-            let mut uwu_out_file = match UwUOutFile::new(&self.output) {
-                Ok(uwu_out_file) => uwu_out_file,
-                Err(err) => return Err(err.into()),
-            };
+            let mut uwu_in_file = UwUInFile::new(&self.input)?;
+            let mut uwu_out_file = UwUOutFile::new(File::create(&self.output)?);
             let mut uwu_progress_bar = UwUProgressBar::new(uwu_in_file.get_file_bytes());
 
             loop {
-                let bytes_read_in = match uwu_in_file.read_until_newline() {
-                    Ok(bytes_read_in) => bytes_read_in,
-                    Err(err) => return Err(err.into()),
-                };
-                if bytes_read_in == 0 {
-                    break;
+                let bytes_read_in = uwu_in_file.read_until_newline()?;
+                if bytes_read_in != 0 {
+                    self.uwuify_sentence(&uwu_in_file.buffer, &mut uwu_out_file)?;
+                    uwu_out_file.write_newline()?;
+
+                    uwu_progress_bar.update_progess(bytes_read_in);
+                    uwu_in_file.clear_buffer();
+                } else {
+                    uwu_progress_bar.finish("UwU'ifying Complete!");
+                    return Ok(());
                 }
-
-                let utf8_str = uwu_in_file.get_buffer_as_utf8_str();
-                let uwu_sentence = self.uwuify_sentence(&utf8_str);
-                match uwu_out_file.write_string_with_newline(&uwu_sentence) {
-                    Ok(_) => (),
-                    Err(err) => return Err(err.into()),
-                };
-
-                uwu_progress_bar.update_progess(bytes_read_in);
-                uwu_in_file.clear_buffer();
             }
-
-            uwu_progress_bar.finish("UwU'ifying Complete!");
         }
-
-        Ok(())
     }
 
-    fn uwuify_sentence(&self, text: &str) -> String {
+    fn uwuify_sentence<T: Write>(
+        &self,
+        text: &str,
+        out: &mut UwUOutFile<T>,
+    ) -> Result<(), std::io::Error> {
         text.split_whitespace()
             .map(|word| {
                 let uwu_word = self.uwuify_word(word.to_string());
                 self.uwuify_spaces(uwu_word)
             })
-            .collect::<Vec<String>>()
-            .join(" ")
+            .try_for_each(|f| {
+                out.write_string(&f)?;
+                out.write_string(" ")
+            })
     }
 
     fn uwuify_word(&self, word: String) -> String {
+        use std::fmt::Write;
         if self.linkify.links(&word).count() > 0 {
             return word;
         }
@@ -179,7 +168,9 @@ impl UwUify {
                 'L' | 'R' => uwu_text.push('W'),
                 'l' | 'r' => uwu_text.push('w'),
                 'E' | 'e' => match previous_char {
-                    'N' | 'n' => uwu_text.push_str(format!("y{}", current_char).as_str()),
+                    'N' | 'n' => uwu_text
+                        .write_fmt(format_args!("y{}", current_char))
+                        .unwrap(),
                     'v' => match previous_previous_char {
                         'o' => {
                             uwu_text.pop();
@@ -191,7 +182,9 @@ impl UwUify {
                     _ => uwu_text.push(current_char),
                 },
                 'A' | 'I' | 'O' | 'U' | 'a' | 'i' | 'o' | 'u' => match previous_char {
-                    'N' | 'n' => uwu_text.push_str(format!("y{}", current_char).as_str()),
+                    'N' | 'n' => uwu_text
+                        .write_fmt(format_args!("y{}", current_char))
+                        .unwrap(),
                     _ => uwu_text.push(current_char),
                 },
                 _ => uwu_text.push(current_char),
@@ -207,14 +200,14 @@ impl UwUify {
 
         if !self.modifiers.supplied_at_runtime {
             if random_value <= self.modifiers.faces {
-                word = format!("{} {}", FACES[seeder.random_int(0, FACES_SIZE)], word);
+                word = format!("{} {}", FACES[seeder.random_int(0..FACES_SIZE)], word);
             } else if random_value <= self.modifiers.actions {
-                word = format!("{} {}", ACTIONS[seeder.random_int(0, ACTIONS_SIZE)], word);
+                word = format!("{} {}", ACTIONS[seeder.random_int(0..ACTIONS_SIZE)], word);
             } else if random_value <= self.modifiers.stutters {
                 let first_char_stutter = format!("{}-", word.chars().next().unwrap());
                 word = format!(
                     "{}{}",
-                    first_char_stutter.repeat(seeder.random_int(1, 2)),
+                    first_char_stutter.repeat(seeder.random_int(1..2)),
                     word
                 );
             }
@@ -223,15 +216,15 @@ impl UwUify {
                 let first_char_stutter = format!("{}-", word.chars().next().unwrap());
                 word = format!(
                     "{}{}",
-                    first_char_stutter.repeat(seeder.random_int(1, 2)),
+                    first_char_stutter.repeat(seeder.random_int(1..2)),
                     word
                 );
             }
             if random_value <= self.modifiers.faces {
-                word = format!("{} {}", FACES[seeder.random_int(0, FACES_SIZE)], word);
+                word = format!("{} {}", FACES[seeder.random_int(0..FACES_SIZE)], word);
             }
             if random_value <= self.modifiers.actions {
-                word = format!("{} {}", ACTIONS[seeder.random_int(0, ACTIONS_SIZE)], word);
+                word = format!("{} {}", ACTIONS[seeder.random_int(0..ACTIONS_SIZE)], word);
             }
         }
 

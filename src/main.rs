@@ -20,19 +20,19 @@ struct Args {
 
     /// The modifier to determine how many words to be uwu'ified
     #[clap(short, long, value_name = "VALUE", default_value = "1", validator = is_between_zero_and_one, display_order = 4)]
-    words: f32,
+    words: f64,
 
     /// The modifier for uwu faces e.g hello -> hewwo
     #[clap(short, long, value_name = "VALUE", default_value = "0.05", validator = is_between_zero_and_one, display_order = 5)]
-    faces: f32,
+    faces: f64,
 
     /// The modifier for actions e.g *shuffles over*
     #[clap(short, long, value_name = "VALUE", default_value = "0.125", validator = is_between_zero_and_one, display_order = 6)]
-    actions: f32,
+    actions: f64,
 
     /// The modifier for stutters e.g b-baka!
     #[clap(short, long, value_name = "VALUE", default_value = "0.225", validator = is_between_zero_and_one, display_order = 7)]
-    stutters: f32,
+    stutters: f64,
 
     /// Flag to enable/disable random uwu'ifying
     #[clap(short, long, display_order = 8)]
@@ -68,16 +68,16 @@ fn main() {
     }
 }
 
-fn is_between_zero_and_one(input: &str) -> Result<(), String> {
+fn is_between_zero_and_one(input: &str) -> Result<(), &'static str> {
     let value = match input.parse::<f32>() {
         Ok(value) => value,
-        Err(_) => return Err(String::from("The value must be a decimal number")),
+        Err(_) => return Err("The value must be a decimal number"),
     };
 
     if (0.0..=1.0).contains(&value) {
         return Ok(());
     }
-    Err(String::from("The value must be between 0.0 and 1.0"))
+    Err("The value must be between 0.0 and 1.0")
 }
 
 fn modifiers_supplied_at_runtime(

@@ -5,80 +5,57 @@ use std::path::Path;
 pub struct UwUInFile {
     file_bytes: u64,
     reader: BufReader<File>,
-    buffer: Vec<u8>,
+    pub buffer: String,
 }
 
-pub struct UwUOutFile {
-    writer: BufWriter<File>,
+#[repr(transparent)]
+pub struct UwUOutFile<T: Write> {
+    writer: BufWriter<T>,
 }
 
 impl UwUInFile {
+    #[inline]
     pub fn new(path: &Path) -> Result<UwUInFile, Error> {
-        let file = match File::open(path) {
-            Ok(file) => file,
-            Err(err) => return Err(err),
-        };
-        let file_metadata = match file.metadata() {
-            Ok(file_metadata) => file_metadata,
-            Err(err) => return Err(err),
-        };
-        let file_bytes = file_metadata.len();
-        let reader = BufReader::new(file);
-        let buffer = Vec::new();
+        let file = File::open(path)?;
 
         Ok(UwUInFile {
-            file_bytes,
-            reader,
-            buffer,
+            file_bytes: file.metadata()?.len(),
+            reader: BufReader::new(file),
+            buffer: String::new(),
         })
     }
 
+    #[inline]
     pub fn read_until_newline(&mut self) -> Result<usize, Error> {
-        match self.reader.read_until(b'\n', &mut self.buffer) {
-            Ok(byte_vec) => Ok(byte_vec),
-            Err(err) => Err(err),
-        }
+        self.reader.read_line(&mut self.buffer)
     }
 
-    pub fn get_buffer_as_utf8_str(&self) -> String {
-        String::from_utf8_lossy(&self.buffer).to_string()
-    }
-
+    #[inline]
     pub fn clear_buffer(&mut self) {
         self.buffer.clear();
     }
 
+    #[inline]
     pub fn get_file_bytes(&self) -> u64 {
         self.file_bytes
     }
 }
 
-impl UwUOutFile {
-    pub fn new(path: &str) -> Result<UwUOutFile, Error> {
-        let file = match File::create(path) {
-            Ok(file) => file,
-            Err(err) => return Err(err),
-        };
-        let writer = BufWriter::new(file);
-
-        Ok(UwUOutFile { writer })
-    }
-
-    pub fn exists(path: &str) -> bool {
-        Path::new(path).exists()
-    }
-
-    pub fn write_string_with_newline(&mut self, write_str: &str) -> Result<(), Error> {
-        match self.writer.write_all(format!("{}\n", write_str).as_bytes()) {
-            Ok(_) => Ok(()),
-            Err(err) => Err(err),
+impl<T: Write> UwUOutFile<T> {
+    #[inline]
+    pub fn new(writer: T) -> UwUOutFile<T> {
+        UwUOutFile {
+            writer: BufWriter::new(writer),
         }
     }
 
+    #[inline]
+    pub fn write_newline(&mut self) -> Result<(), Error> {
+        self.writer.write_all(b"\n")
+    }
+
+    #[inline]
     pub fn write_string(&mut self, write_str: &str) -> Result<(), Error> {
-        match self.writer.write_all(write_str.as_bytes()) {
-            Ok(_) => Ok(()),
-            Err(err) => Err(err),
-        }
+        self.writer.write_all(write_str.as_bytes())
     }
 }

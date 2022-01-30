@@ -1,24 +1,11 @@
-pub const FACES_SIZE: i32 = 15;
-pub const FACES: [&str; FACES_SIZE as usize] = [
-    "OwO",
-    "UwU",
-    ">w<",
-    "^w^",
-    "ÚwÚ",
-    "^-^",
-    ":3",
-    "x3",
-    "xDD",
-    ";;w;;",
-    ">_<",
-    ">_>",
-    "^.^",
-    ":33",
-    "uWu",
+pub const FACES_SIZE: usize = 15;
+pub const FACES: [&str; FACES_SIZE] = [
+    "OwO", "UwU", ">w<", "^w^", "ÚwÚ", "^-^", ":3", "x3", "xDD", ";;w;;", ">_<", ">_>", "^.^",
+    ":33", "uWu",
 ];
 
-pub const ACTIONS_SIZE: i32 = 17;
-pub const ACTIONS: [&str; ACTIONS_SIZE as usize] = [
+pub const ACTIONS_SIZE: usize = 17;
+pub const ACTIONS: [&str; ACTIONS_SIZE] = [
     "*notices bulge*",
     "*cries*",
     "*hugs tightly*",

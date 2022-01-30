@@ -1,35 +1,41 @@
-use rand::{Rng, rngs::ThreadRng, thread_rng};
-use rand_pcg::Pcg32;
-use rand_seeder::Seeder;
+use std::hash::Hasher;
+
+use rand::{
+    distributions::uniform::{SampleRange, SampleUniform},
+    Rng, RngCore, SeedableRng,
+};
+use rand_xoshiro::{Xoshiro256Plus, Xoshiro256PlusPlus};
 
 pub struct UwUSeeder {
-    seeder: Pcg32,
-    rng: ThreadRng,
-    random: bool,
+    floating: Xoshiro256Plus,
+    int: Xoshiro256PlusPlus,
 }
 
 impl UwUSeeder {
+    #[inline]
     pub fn new(word: &str, random: bool) -> UwUSeeder {
+        let entropy = match random {
+            true => rand::rngs::OsRng.next_u64(),
+            false => {
+                let mut hasher = ahash::AHasher::default();
+                hasher.write(word.as_bytes());
+                hasher.finish()
+            }
+        };
+
         UwUSeeder {
-            seeder: Seeder::from(word).make_rng(),
-            rng: thread_rng(),
-            random,
+            floating: Xoshiro256Plus::seed_from_u64(entropy),
+            int: Xoshiro256PlusPlus::seed_from_u64(entropy),
         }
     }
 
-    pub fn random(&mut self) -> f32 {
-        if self.random {
-            self.rng.gen_range(0.0..1.0)
-        } else {
-            self.seeder.gen_range(0.0..1.0)
-        }
+    #[inline]
+    pub fn random(&mut self) -> f64 {
+        f64::from_ne_bytes(self.floating.next_u64().to_ne_bytes())
     }
 
-    pub fn random_int(&mut self, min: i32, max: i32) -> usize {
-        if self.random {
-            self.rng.gen_range(min..max) as usize
-        } else {
-            self.seeder.gen_range(min..max) as usize
-        }
+    #[inline]
+    pub fn random_int<T: SampleUniform, R: SampleRange<T>>(&mut self, range: R) -> T {
+        self.int.gen_range(range)
     }
 }
