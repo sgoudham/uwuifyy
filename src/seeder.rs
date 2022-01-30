@@ -14,13 +14,12 @@ pub struct UwUSeeder {
 impl UwUSeeder {
     #[inline]
     pub fn new(word: &str, random: bool) -> UwUSeeder {
-        let entropy = match random {
-            true => rand::rngs::OsRng.next_u64(),
-            false => {
-                let mut hasher = ahash::AHasher::default();
-                hasher.write(word.as_bytes());
-                hasher.finish()
-            }
+        let entropy = if !random {
+            let mut hasher = ahash::AHasher::default();
+            hasher.write(word.as_bytes());
+            hasher.finish()
+        } else {
+            rand::rngs::OsRng.next_u64()
         };
 
         UwUSeeder {
