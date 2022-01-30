@@ -155,7 +155,11 @@ impl<'a> UwUify<'a> {
         }
     }
 
-    fn uwuify_sentence<T: Write>(&mut self, text: &str, out: &mut T) -> Result<(), std::io::Error> {
+    pub fn uwuify_sentence<T: Write>(
+        &mut self,
+        text: &str,
+        out: &mut T,
+    ) -> Result<(), std::io::Error> {
         text.lines().try_for_each(|line| {
             line.split_whitespace()
                 .map(|f| f.as_bytes())
