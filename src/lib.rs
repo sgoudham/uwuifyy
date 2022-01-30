@@ -1,22 +1,31 @@
 #![cfg_attr(test, feature(test))]
 
+use indicatif::{ProgressBar, ProgressStyle};
 use linkify::{LinkFinder, LinkKind};
 use std::fs::File;
-use std::io::{Error, Write};
+use std::io::{BufWriter, Error, Write};
 use std::path::Path;
 
 use constants::ACTIONS;
 use constants::ACTIONS_SIZE;
 use constants::FACES;
 use constants::FACES_SIZE;
-use io::UwUOutFile;
-use progress_bar::UwUProgressBar;
 use seeder::UwUSeeder;
 
 mod constants;
-mod io;
-mod progress_bar;
 mod seeder;
+
+macro_rules! progress_bar {
+    () => {{
+        let progress_bar = ProgressBar::new_spinner();
+        progress_bar.set_style(
+            ProgressStyle::default_spinner().template("{spinner:.green} [{elapsed_precise}] {msg}"),
+        );
+        progress_bar.enable_steady_tick(100);
+
+        progress_bar
+    }};
+}
 
 #[derive(Debug)]
 pub struct UwUify<'a> {
@@ -99,22 +108,22 @@ impl<'a> UwUify<'a> {
                     ));
                 }
 
-                let mut uwu_out_file = UwUOutFile::new(File::create(&self.output)?);
-                let uwu_progress_bar = UwUProgressBar::new();
+                let mut uwu_out_file = BufWriter::new(File::create(&self.output)?);
+                let uwu_progress_bar = progress_bar!();
                 self.uwuify_sentence(self.text, &mut uwu_out_file)?;
 
-                uwu_progress_bar.finish("UwU'ifying Complete!");
+                uwu_progress_bar.finish_with_message("UwU'ifying Complete!");
                 Ok(())
             } else {
                 #[cfg(not(test))]
                 let stdout = std::io::stdout();
                 #[cfg(not(test))]
-                let mut out = UwUOutFile::new(stdout.lock());
+                let mut out = BufWriter::new(stdout.lock());
                 #[cfg(test)]
-                let mut out = UwUOutFile::new(std::io::sink());
+                let mut out = std::io::sink();
                 self.uwuify_sentence(self.text, &mut out)?;
                 #[cfg(not(test))]
-                out.write_bytes(b"\n")?;
+                out.write_all(b"\n")?;
                 Ok(())
             }
         } else {
@@ -126,25 +135,21 @@ impl<'a> UwUify<'a> {
                 ));
             }
 
-            let uwu_progress_bar = UwUProgressBar::new();
+            let uwu_progress_bar = progress_bar!();
             self.uwuify_sentence(
                 unsafe {
                     std::str::from_utf8_unchecked(
                         memmap::Mmap::map(&File::open(&self.input)?)?.as_ref(),
                     )
                 },
-                &mut UwUOutFile::new(File::create(&self.output)?),
+                &mut BufWriter::new(File::create(&self.output)?),
             )?;
-            uwu_progress_bar.finish("UwU'ifying Complete!");
+            uwu_progress_bar.finish_with_message("UwU'ifying Complete!");
             Ok(())
         }
     }
 
-    fn uwuify_sentence<T: Write>(
-        &self,
-        text: &str,
-        out: &mut UwUOutFile<T>,
-    ) -> Result<(), std::io::Error> {
+    fn uwuify_sentence<T: Write>(&self, text: &str, out: &mut T) -> Result<(), std::io::Error> {
         text.as_bytes()
             .split(|w| matches!(*w, b'\t' | b'\x0C' | b'\r' | b' '))
             .scan([].as_ref(), |scan, i| {
@@ -161,15 +166,15 @@ impl<'a> UwUify<'a> {
                 let random_value = seeder.random();
 
                 if random_value <= self.faces {
-                    out.write_bytes(FACES[seeder.random_int(0..FACES_SIZE)])?;
-                    out.write_bytes(b" ")?;
+                    out.write_all(FACES[seeder.random_int(0..FACES_SIZE)])?;
+                    out.write_all(b" ")?;
                 } else if random_value <= self.actions {
-                    out.write_bytes(ACTIONS[seeder.random_int(0..ACTIONS_SIZE)])?;
-                    out.write_bytes(b" ")?;
+                    out.write_all(ACTIONS[seeder.random_int(0..ACTIONS_SIZE)])?;
+                    out.write_all(b" ")?;
                 } else if random_value <= self.stutters {
                     (0..seeder.random_int(1..2)).into_iter().try_for_each(|_| {
-                        out.write_bytes(&word[0..1])?;
-                        out.write_bytes(b"-")
+                        out.write_all(&[word[0]])?;
+                        out.write_all(b"-")
                     })?;
                 }
 
@@ -180,21 +185,21 @@ impl<'a> UwUify<'a> {
                     > 0
                     || random_value > self.words
                 {
-                    out.write_bytes(word)?;
+                    out.write_all(word)?;
                 } else {
                     (0..word.len()).try_for_each(|index| match word[index] {
-                        b'L' | b'R' => out.write_bytes(b"W"),
-                        b'l' | b'r' => out.write_bytes(b"w"),
+                        b'L' | b'R' => out.write_all(b"W"),
+                        b'l' | b'r' => out.write_all(b"w"),
                         b'E' | b'e' | b'A' | b'I' | b'O' | b'U' | b'a' | b'i' | b'o' | b'u' => {
                             match word.get(index - 1).unwrap_or(&word[0]) {
-                                b'N' | b'n' => out.write_bytes(&[b'y', word[index]]),
-                                _ => out.write_bytes(&[word[index]]),
+                                b'N' | b'n' => out.write_all(&[b'y', word[index]]),
+                                _ => out.write_all(&[word[index]]),
                             }
                         }
-                        _ => out.write_bytes(&[word[index]]),
+                        _ => out.write_all(&[word[index]]),
                     })?;
                 }
-                out.write_bytes(b" ")
+                out.write_all(b" ")
             })
     }
 }
