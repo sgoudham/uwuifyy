@@ -17,12 +17,14 @@ mod constants;
 mod seeder;
 
 macro_rules! progress_bar {
-    () => {{
-        let progress_bar = ProgressBar::new_spinner();
+    ($bytes:expr) => {{
+        let progress_bar = ProgressBar::new($bytes);
         progress_bar.set_style(
-            ProgressStyle::default_spinner().template("{spinner:.green} [{elapsed_precise}] {msg}"),
+            ProgressStyle::default_spinner()
+                .template("{spinner:.magenta} [{elapsed_precise:.bold}] {msg:.green.bold}"),
         );
-        progress_bar.enable_steady_tick(100);
+        progress_bar.set_message("UwU'ifying In Progress...");
+        progress_bar.enable_steady_tick(30);
 
         progress_bar
     }};
@@ -113,7 +115,7 @@ impl<'a> UwUify<'a> {
                     ));
                 }
 
-                let uwu_progress_bar = progress_bar!();
+                let uwu_progress_bar = progress_bar!(self.text.len() as u64);
                 self.uwuify_sentence(self.text, &mut BufWriter::new(File::create(&self.output)?))?;
                 uwu_progress_bar.finish_with_message("UwU'ifying Complete!");
             } else {
@@ -128,9 +130,10 @@ impl<'a> UwUify<'a> {
                 ));
             }
 
-            let uwu_progress_bar = progress_bar!();
+            let infile = File::open(&self.input)?;
+            let uwu_progress_bar = progress_bar!(infile.metadata()?.len());
             self.uwuify_sentence(
-                unsafe { from_utf8_unchecked(Mmap::map(&File::open(&self.input)?)?.as_ref()) },
+                unsafe { from_utf8_unchecked(Mmap::map(&infile)?.as_ref()) },
                 &mut BufWriter::new(File::create(&self.output)?),
             )?;
             uwu_progress_bar.finish_with_message("UwU'ifying Complete!");
