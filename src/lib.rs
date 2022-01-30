@@ -2,6 +2,8 @@
 
 use indicatif::{ProgressBar, ProgressStyle};
 use linkify::{LinkFinder, LinkKind};
+use rand::{Rng, RngCore, SeedableRng};
+use rand_xoshiro::{Xoshiro256Plus, Xoshiro256PlusPlus};
 use std::fs::File;
 use std::io::{BufWriter, Error, Write};
 use std::path::Path;
@@ -10,10 +12,8 @@ use constants::ACTIONS;
 use constants::ACTIONS_SIZE;
 use constants::FACES;
 use constants::FACES_SIZE;
-use seeder::UwUSeeder;
 
 mod constants;
-mod seeder;
 
 macro_rules! progress_bar {
     () => {{
@@ -36,7 +36,8 @@ pub struct UwUify<'a> {
     faces: f64,
     actions: f64,
     stutters: f64,
-    random: bool,
+    floating_rng: Xoshiro256Plus,
+    int_rng: Xoshiro256PlusPlus,
     linkify: LinkFinder,
 }
 
@@ -50,7 +51,8 @@ impl<'a> Default for UwUify<'a> {
             faces: 0.05,
             actions: 0.125,
             stutters: 0.225,
-            random: false,
+            floating_rng: Xoshiro256Plus::seed_from_u64(69),
+            int_rng: Xoshiro256PlusPlus::seed_from_u64(420),
             linkify: LinkFinder::new(),
         }
     }
@@ -76,10 +78,14 @@ impl<'a> UwUify<'a> {
             text: text.unwrap_or_default(),
             input: infile.unwrap_or_default(),
             output: outfile.unwrap_or_default(),
-            random,
             linkify,
             ..Default::default()
         };
+
+        if random {
+            uwuify.floating_rng = Xoshiro256Plus::seed_from_u64(rand::rngs::OsRng.next_u64());
+            uwuify.int_rng = Xoshiro256PlusPlus::seed_from_u64(rand::rngs::OsRng.next_u64());
+        }
 
         if let Some(words) = words {
             uwuify.words = words.parse::<f64>().unwrap();
@@ -96,7 +102,7 @@ impl<'a> UwUify<'a> {
         uwuify
     }
 
-    pub fn uwuify(&self) -> Result<(), Error> {
+    pub fn uwuify(&mut self) -> Result<(), Error> {
         // Handle Text
         if !self.text.is_empty() {
             // Handle Text Output
@@ -149,25 +155,26 @@ impl<'a> UwUify<'a> {
         }
     }
 
-    fn uwuify_sentence<T: Write>(&self, text: &str, out: &mut T) -> Result<(), std::io::Error> {
+    fn uwuify_sentence<T: Write>(&mut self, text: &str, out: &mut T) -> Result<(), std::io::Error> {
         text.lines().try_for_each(|line| {
             line.split_whitespace()
                 .map(|f| f.as_bytes())
                 .try_for_each(|word| {
-                    let mut seeder = UwUSeeder::new(word, self.random);
-                    let random_value = seeder.random();
+                    let random_value = self.floating_rng.gen_range(0.0..1.0);
 
                     if random_value <= self.faces {
-                        out.write_all(FACES[seeder.random_int(0..FACES_SIZE)])?;
+                        out.write_all(FACES[self.int_rng.gen_range(0..FACES_SIZE)])?;
                         out.write_all(b" ")?;
                     } else if random_value <= self.actions {
-                        out.write_all(ACTIONS[seeder.random_int(0..ACTIONS_SIZE)])?;
+                        out.write_all(ACTIONS[self.int_rng.gen_range(0..ACTIONS_SIZE)])?;
                         out.write_all(b" ")?;
                     } else if random_value <= self.stutters {
-                        (0..seeder.random_int(1..2)).into_iter().try_for_each(|_| {
-                            out.write_all(&[word[0]])?;
-                            out.write_all(b"-")
-                        })?;
+                        (0..self.int_rng.gen_range(1..2))
+                            .into_iter()
+                            .try_for_each(|_| {
+                                out.write_all(&[word[0]])?;
+                                out.write_all(b"-")
+                            })?;
                     }
 
                     if self
@@ -208,11 +215,12 @@ mod tests {
         let mut linkify = LinkFinder::new();
         linkify.kinds(&[LinkKind::Email, LinkKind::Url]);
         linkify.url_must_have_scheme(false);
-        let uwuify = super::UwUify {
+        let mut uwuify = super::UwUify {
             text: include_str!("test.txt"),
             linkify,
             ..Default::default()
         };
+
         b.iter(|| uwuify.uwuify());
     }
 }
