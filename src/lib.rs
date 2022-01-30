@@ -138,104 +138,81 @@ impl UwUify {
         text: &str,
         out: &mut UwUOutFile<T>,
     ) -> Result<(), std::io::Error> {
-        text.split_whitespace()
-            .map(|word| {
-                let uwu_word = self.uwuify_word(word.to_string());
-                self.uwuify_spaces(uwu_word)
-            })
-            .try_for_each(|f| {
-                out.write_string(&f)?;
-                out.write_string(" ")
-            })
+        text.split_whitespace().try_for_each(|word| {
+            self.uwuify_word(word, out)?;
+            out.write_string(" ")
+        })
     }
 
-    fn uwuify_word(&self, word: String) -> String {
-        use std::fmt::Write;
-        if self.linkify.links(&word).count() > 0 {
-            return word;
+    fn uwuify_word<T: Write>(
+        &self,
+        word: &str,
+        out: &mut UwUOutFile<T>,
+    ) -> Result<(), std::io::Error> {
+        let mut seeder = UwUSeeder::new(word, self.random);
+        let random_value = seeder.random();
+
+        if !self.modifiers.supplied_at_runtime {
+            if random_value <= self.modifiers.faces {
+                out.write_string(FACES[seeder.random_int(0..FACES_SIZE)])?;
+                out.write_bytes(b" ")?;
+            } else if random_value <= self.modifiers.actions {
+                out.write_string(ACTIONS[seeder.random_int(0..ACTIONS_SIZE)])?;
+                out.write_bytes(b" ")?;
+            } else if random_value <= self.modifiers.stutters {
+                (0..seeder.random_int(1..2)).into_iter().try_for_each(|_| {
+                    out.write_bytes(&word.as_bytes()[0..1])?;
+                    out.write_bytes(b"-")
+                })?;
+            }
+        } else {
+            if random_value <= self.modifiers.stutters {
+                (0..seeder.random_int(1..2)).into_iter().try_for_each(|_| {
+                    out.write_bytes(&word.as_bytes()[0..1])?;
+                    out.write_bytes(b"-")
+                })?;
+            }
+            if random_value <= self.modifiers.faces {
+                out.write_string(FACES[seeder.random_int(0..FACES_SIZE)])?;
+                out.write_bytes(b" ")?;
+            }
+            if random_value <= self.modifiers.actions {
+                out.write_string(ACTIONS[seeder.random_int(0..ACTIONS_SIZE)])?;
+                out.write_bytes(b" ")?;
+            }
         }
 
-        let mut seeder = UwUSeeder::new(&word, self.random);
+        if self.linkify.links(word).count() > 0 {
+            return out.write_string(word);
+        }
+
+        let mut seeder = UwUSeeder::new(word, self.random);
         if seeder.random() > self.modifiers.words {
-            return word;
+            return out.write_string(word);
         }
 
         let word_bytes = word.as_bytes();
         let uwu_text_count = word.len();
-        let mut uwu_text = String::new();
 
-        for index in 0..uwu_text_count {
-            let previous_previous_char =
-                *word_bytes.get(index - 2).unwrap_or_else(|| &word_bytes[0]) as char;
+        (0..uwu_text_count).try_for_each(|index| {
             let previous_char =
                 *word_bytes.get(index - 1).unwrap_or_else(|| &word_bytes[0]) as char;
             let current_char = word_bytes[index] as char;
 
             match current_char {
-                'L' | 'R' => uwu_text.push('W'),
-                'l' | 'r' => uwu_text.push('w'),
+                'L' | 'R' => out.write_bytes(b"W"),
+                'l' | 'r' => out.write_bytes(b"w"),
                 'E' | 'e' => match previous_char {
-                    'N' | 'n' => uwu_text
-                        .write_fmt(format_args!("y{}", current_char))
-                        .unwrap(),
-                    'v' => match previous_previous_char {
-                        'o' => {
-                            uwu_text.pop();
-                            uwu_text.pop();
-                            uwu_text.push_str("uv");
-                        }
-                        _ => uwu_text.push(current_char),
-                    },
-                    _ => uwu_text.push(current_char),
+                    'N' | 'n' => out.write_fmt(format_args!("y{}", current_char)),
+                    _ => out.write_fmt(format_args!("{}", current_char)),
                 },
                 'A' | 'I' | 'O' | 'U' | 'a' | 'i' | 'o' | 'u' => match previous_char {
-                    'N' | 'n' => uwu_text
-                        .write_fmt(format_args!("y{}", current_char))
-                        .unwrap(),
-                    _ => uwu_text.push(current_char),
+                    'N' | 'n' => out.write_fmt(format_args!("y{}", current_char)),
+                    _ => out.write_fmt(format_args!("{}", current_char)),
                 },
-                _ => uwu_text.push(current_char),
+                _ => out.write_fmt(format_args!("{}", current_char)),
             }
-        }
-
-        uwu_text
-    }
-
-    fn uwuify_spaces(&self, mut word: String) -> String {
-        let mut seeder = UwUSeeder::new(&word, self.random);
-        let random_value = seeder.random();
-
-        if !self.modifiers.supplied_at_runtime {
-            if random_value <= self.modifiers.faces {
-                word = format!("{} {}", FACES[seeder.random_int(0..FACES_SIZE)], word);
-            } else if random_value <= self.modifiers.actions {
-                word = format!("{} {}", ACTIONS[seeder.random_int(0..ACTIONS_SIZE)], word);
-            } else if random_value <= self.modifiers.stutters {
-                let first_char_stutter = format!("{}-", word.chars().next().unwrap());
-                word = format!(
-                    "{}{}",
-                    first_char_stutter.repeat(seeder.random_int(1..2)),
-                    word
-                );
-            }
-        } else {
-            if random_value <= self.modifiers.stutters {
-                let first_char_stutter = format!("{}-", word.chars().next().unwrap());
-                word = format!(
-                    "{}{}",
-                    first_char_stutter.repeat(seeder.random_int(1..2)),
-                    word
-                );
-            }
-            if random_value <= self.modifiers.faces {
-                word = format!("{} {}", FACES[seeder.random_int(0..FACES_SIZE)], word);
-            }
-            if random_value <= self.modifiers.actions {
-                word = format!("{} {}", ACTIONS[seeder.random_int(0..ACTIONS_SIZE)], word);
-            }
-        }
-
-        word
+        })
     }
 }
 

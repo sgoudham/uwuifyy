@@ -58,4 +58,14 @@ impl<T: Write> UwUOutFile<T> {
     pub fn write_string(&mut self, write_str: &str) -> Result<(), Error> {
         self.writer.write_all(write_str.as_bytes())
     }
+
+    #[inline]
+    pub fn write_bytes(&mut self, write_bytes: &[u8]) -> Result<(), Error> {
+        self.writer.write_all(write_bytes)
+    }
+
+    #[inline]
+    pub fn write_fmt(&mut self, fmt: std::fmt::Arguments) -> Result<(), Error> {
+        self.writer.write_fmt(fmt)
+    }
 }
