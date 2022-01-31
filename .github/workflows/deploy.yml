@@ -102,18 +102,6 @@ jobs:
           asset_path: ${{ env.BIN }}.tar.gz
           asset_name: ${{ env.BIN }}-${{ matrix.target }}.tar.gz
           asset_content_type: application/gzip
-      - uses: mislav/bump-homebrew-formula-action@v1
-        if: "!contains(github.ref, '-')" # skip prereleases
-        with:
-          formula-name: ${{ env.BIN }}
-          homebrew-tap: sgoudham/tap
-          download-url: https://github.com/sgoudham/${{ env.BIN }}/releases/download/${{ github.ref }}/${{ env.BIN }}-${{ matrix.target }}.tar.gz
-          commit-message: |
-            {{formulaName}} {{version}}
-            
-            Created by https://github.com/mislav/bump-homebrew-formula-action
-        env:
-          COMMITTER_TOKEN: ${{ secrets.HOMEBREW }}
 
   linux:
     runs-on: ubuntu-latest
