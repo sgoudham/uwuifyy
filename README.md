@@ -5,9 +5,9 @@
 [![downloads](https://img.shields.io/crates/d/uwuifyy)](https://crates.io/crates/uwuifyy)
 [![license](https://img.shields.io/github/license/sgoudham/uwuifyy)](LICENSE)
 
-> A robust, customizable, efficient and easy-to-use command line application to uwu'ify your text!
+> A robust, customizable, blazingly-fast, efficient and easy-to-use command line application to uwu'ify your text!
 >
-![](logo/UwUifyy-Transparent-Small.png)
+![](logo/uwuifyy-logo.png)
 >
 > Logo Credits: Jade Nelson
 
@@ -17,9 +17,11 @@
     * [About](#about)
     * [Features](#features)
     * [Installation](#installation)
-        + [Windows](#windows)
-        + [Linux \ macOS](#Linux-\-macOS)
-        + [Rust \ Cargo](#Rust-\-Cargo)
+        * [Homebrew](#homebrew)
+        * [Binaries](#binaries)
+            + [Windows](#windows)
+            + [Linux \ macOS](#Linux-\-macOS)
+            + [Rust \ Cargo](#Rust-\-Cargo)
     * [Usage](#usage)
         + [Text Input to Text Output](#text-input-to-text-output)
         + [Text Input to File Output](#text-input-to-file-output)
@@ -40,12 +42,24 @@ allows you to _uwu'ify_ text and files from within your own terminal in an _extr
 
 ## Features
 
+- [x] _**BLAZINGLY FAST**_ (Check out -> [Benchmarks](#benchmarks))
 - [x] Seeded by default to allow for reproducible results
 - [x] Excludes URL's & Emails
 - [x] UwU'ify files available locally on disk
 - [x] Completely customisable modifiers
 
 ## Installation
+
+### Homebrew
+
+For `macOS` users, installation through [Homebrew](https://brew.sh/) is recommended.
+
+```shell
+$ brew tap sgoudham/tap
+$ brew install uwuifyy
+```
+
+### Binaries
 
 Binaries for **Windows**, **macOS** & **Linux** are available with every
 single [release](https://github.com/sgoudham/uwuifyy/releases)
@@ -69,13 +83,13 @@ C:
 3. Set `uwuifyy.exe` in your path to access it globally
 
 ```shell
-setx path "%path%;C:\your\path\here\bin"
+$ setx path "%path%;C:\your\path\here\bin"
 ```
 
 4. Refresh command line and verify installation
 
 ```shell
-uwuifyy --help
+$ uwuifyy --help
 ```
 
 ### Linux \ macOS
@@ -88,43 +102,44 @@ uwuifyy --help
 
 ```shell
 # Linux
-tar -xf uwuifyy-x86_64-unknown-linux-gnu.tar.gz
-tar -xf uwuifyy-x86_64-unknown-linux-musl.tar.gz
+$ tar -xf uwuifyy-x86_64-unknown-linux-gnu.tar.gz
+$ tar -xf uwuifyy-x86_64-unknown-linux-musl.tar.gz
 
 # macOS
-tar -xf uwuifyy-x86_64-apple-darwin.tar.gz
+$ tar -xf uwuifyy-x86_64-apple-darwin.tar.gz
 ```
 
 3. Move into `~/bin`
 
 ```shell
 # Create ~/bin if it does not exist
-mkdir -p ~/bin
-mv uwuifyy ~/bin
+$ mkdir -p ~/bin
+$ mv uwuifyy ~/bin
 ```
 
 4. Set permissions for executable
 
 ```shell
-chmod 755 ~/bin/uwuifyy
+$ chmod 755 ~/bin/uwuifyy
 ```
 
 5. Update `PATH` to use globally
 
 ```shell
 # Linux
-echo 'export PATH=~/bin:$PATH' >> ~/.bashrc 
-source ~/.bashrc
+$ echo 'export PATH=~/bin:$PATH' >> ~/.bashrc 
+$ source ~/.bashrc
 
 # macOS
-echo 'export PATH=~/bin:$PATH' >> ~/.bash_profile
-source ~/.bash_profile
+$ echo 'export PATH=~/bin:$PATH' >> ~/.bash_profile
+$ source ~/.bash_profile
 ```
 
 6. Verify installation
 
 ```shell
-uwuifyy --help
+$ uwuifyy --help
+uwuifyy 0.2.0
 ```
 
 ### Rust \ Cargo
@@ -132,7 +147,7 @@ uwuifyy --help
 Alternatively, if using Rust's package manager, `Cargo`, all that is needed is
 
 ```shell
-cargo install uwuifyy
+$ cargo install uwuifyy
 ```
 
 If you do not have `Cargo` available on your machine, you can download it as part of
@@ -141,6 +156,8 @@ Rust [here](https://www.rust-lang.org/tools/install)
 ## Usage
 
 ```commandline
+$ uwuifyy --help
+
 USAGE:
     uwuifyy.exe [OPTIONS] <--text <TEXT>|--infile <FILE>>
 
@@ -159,42 +176,15 @@ OPTIONS:
 
 ### Text Input to Text Output
 
-```shell
-uwuifyy --text "According to all known laws of aviation, there is no way a bee should be able to fly."
-  Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd be abwe to *screams* fwy.
-```
+![](examples/gifs/text-input-to-text-output.gif)
 
 ### Text Input to File Output
 
-```shell
-uwuifyy --text "According to all known laws of aviation, there is no way a bee should be able to fly." --outfile your/path/here/outfile.txt
-  [00:00:00] [############################################################] 104B/104B (0s) UwU'ifying Complete!
-```
-
-```text
-your/path/here/outfile.txt
--------------------------------------
-Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd be abwe to *screams* fwy.
-```
+![](examples/gifs/text-input-to-file-output.gif)
 
 ### File Input to File Output
 
-```text
-your/path/here/infile.txt
--------------------------------------
-According to all known laws of aviation, there is no way a bee should be able to fly.
-```
-
-```shell
-uwuifyy --infile your/path/here/infile.txt --outfile your/path/here/outfile.txt
-  [00:00:00] [############################################################] 85B/85B (0s) UwU'ifying Complete! 
-```
-
-```text
-your/path/here/outfile.txt
--------------------------------------
-Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd be abwe to *screams* fwy.
-```
+![](examples/gifs/text-file-to-file-output.gif)
 
 ## Benchmarks
 
@@ -206,7 +196,7 @@ Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd b
 
 - [Dataset](https://www.kaggle.com/kewagbln/shakespeareonline)
 - Size: `5.46 MiB`
-- Time Taken: `1s`
+- Time Taken: `< 1s`
 
 ![](examples/gifs/william-shakespeare.gif)
 
@@ -214,7 +204,7 @@ Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd b
 
 - [Dataset](https://www.kaggle.com/amritpal333/tokyo-olympics-2021-tweets)
 - Size: `98.54 MiB`
-- Time Taken: `8s`
+- Time Taken: `1s`
 
 ![](examples/gifs/tokyo-2020-olympics-tweets.gif)
 
@@ -222,7 +212,7 @@ Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd b
 
 - [Dataset](https://www.kaggle.com/shivamb/35-million-tiktok-mobile-app-reviews)
 - Size: `543.02 MiB`
-- TIme Taken: `38s`
+- TIme Taken: `4s`
 
 ![](examples/gifs/tiktok_app_reviews.gif)
 
@@ -230,8 +220,8 @@ Accowding to aww knyown waws of aviation, thewe xDD is nyo way :3 a bee shouwd b
 
 - [Dataset](https://www.kaggle.com/bittlingmayer/amazonreviews?select=train.ft.txt.bz2)
 - Size: `1.6 GiB`
-- Time Taken: `2:16m`
-- **DISCLAIMER:** The input is a 1.6GB file and the output is a 2GB file. They are not included in the repo.
+- Time Taken: `21s`
+- **DISCLAIMER:** The input is a 1.6GB file and the output is a 2.2GB file. They are not included in the repo.
 
 ![](examples/gifs/amazon-ratings-reviews.gif)
 
