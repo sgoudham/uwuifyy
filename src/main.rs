@@ -1,3 +1,5 @@
+use std::panic::set_hook;
+
 use clap::{Arg, ArgGroup, ErrorKind};
 
 use uwuifyy::UwUify;
@@ -99,14 +101,17 @@ macro_rules! clap_panic {
     };
 }
 
-fn main() {
-    std::panic::set_hook(Box::new(|info| {
-        clap_panic!(info);
-    }));
-    let matches = app!().get_matches();
+macro_rules! is_runtime {
+    ($faces:expr, $actions:expr, $stutters:expr) => {
+        $faces > 0 || $actions > 0 || $stutters > 0
+    };
+}
 
-    // panicing here ensures that the error is passed to the hook above instead of to stdout.
-    match UwUify::new(
+fn main() {
+    set_hook(Box::new(|info| clap_panic!(info)));
+
+    let matches = app!().get_matches();
+    if let Err(err) = UwUify::new(
         matches.value_of("text"),
         matches.value_of("infile"),
         matches.value_of("outfile"),
@@ -115,12 +120,16 @@ fn main() {
         matches.value_of("actions"),
         matches.value_of("stutters"),
         matches.is_present("random"),
+        is_runtime!(
+            matches.occurrences_of("faces"),
+            matches.occurrences_of("actions"),
+            matches.occurrences_of("stutters")
+        ),
     )
     .uwuify()
     {
-        Err(e) => clap_panic!(e),
-        _ => {}
-    };
+        clap_panic!(err);
+    }
 }
 
 fn is_between_zero_and_one(input: &str) -> Result<(), &'static str> {

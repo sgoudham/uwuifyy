@@ -1,25 +1,30 @@
+use std::fs::File;
+use std::io::{stdout, BufWriter, Error, ErrorKind, Write};
+use std::path::Path;
+use std::str::from_utf8_unchecked;
+
 use indicatif::{ProgressBar, ProgressStyle};
 use linkify::{LinkFinder, LinkKind};
-use rand::{Rng, RngCore, SeedableRng};
-use rand_xoshiro::{Xoshiro256Plus, Xoshiro256PlusPlus};
-use std::fs::File;
-use std::io::{BufWriter, Error, Write};
-use std::path::Path;
+use memmap::Mmap;
 
 use constants::ACTIONS;
 use constants::ACTIONS_SIZE;
 use constants::FACES;
 use constants::FACES_SIZE;
+use seeder::UwUSeeder;
 
 mod constants;
+mod seeder;
 
 macro_rules! progress_bar {
-    () => {{
-        let progress_bar = ProgressBar::new_spinner();
+    ($bytes:expr) => {{
+        let progress_bar = ProgressBar::new($bytes);
         progress_bar.set_style(
-            ProgressStyle::default_spinner().template("{spinner:.green} [{elapsed_precise}] {msg}"),
+            ProgressStyle::default_spinner()
+                .template("{spinner:.magenta} [{elapsed_precise:.bold}] {msg:.green.bold}"),
         );
-        progress_bar.enable_steady_tick(100);
+        progress_bar.set_message("UwU'ifying In Progress...");
+        progress_bar.enable_steady_tick(30);
 
         progress_bar
     }};
@@ -34,8 +39,8 @@ pub struct UwUify<'a> {
     faces: f64,
     actions: f64,
     stutters: f64,
-    floating_rng: Xoshiro256Plus,
-    int_rng: Xoshiro256PlusPlus,
+    random: bool,
+    is_runtime: bool,
     linkify: LinkFinder,
 }
 
@@ -49,8 +54,8 @@ impl<'a> Default for UwUify<'a> {
             faces: 0.05,
             actions: 0.125,
             stutters: 0.225,
-            floating_rng: Xoshiro256Plus::seed_from_u64(69),
-            int_rng: Xoshiro256PlusPlus::seed_from_u64(420),
+            random: false,
+            is_runtime: false,
             linkify: LinkFinder::new(),
         }
     }
@@ -66,24 +71,21 @@ impl<'a> UwUify<'a> {
         actions: Option<&'a str>,
         stutters: Option<&'a str>,
         random: bool,
+        is_runtime: bool,
     ) -> UwUify<'a> {
-        // I dislike this
-
         let mut linkify = LinkFinder::new();
         linkify.kinds(&[LinkKind::Email, LinkKind::Url]);
         linkify.url_must_have_scheme(false);
+
         let mut uwuify = UwUify {
             text: text.unwrap_or_default(),
             input: infile.unwrap_or_default(),
             output: outfile.unwrap_or_default(),
+            random,
+            is_runtime,
             linkify,
             ..Default::default()
         };
-
-        if random {
-            uwuify.floating_rng = Xoshiro256Plus::seed_from_u64(rand::rngs::OsRng.next_u64());
-            uwuify.int_rng = Xoshiro256PlusPlus::seed_from_u64(rand::rngs::OsRng.next_u64());
-        }
 
         if let Some(words) = words {
             uwuify.words = words.parse::<f64>().unwrap();
@@ -97,6 +99,7 @@ impl<'a> UwUify<'a> {
         if let Some(stutters) = stutters {
             uwuify.stutters = stutters.parse::<f64>().unwrap();
         }
+
         uwuify
     }
 
@@ -107,85 +110,79 @@ impl<'a> UwUify<'a> {
             if !self.output.is_empty() {
                 if Path::new(&self.output).exists() {
                     return Err(Error::new(
-                        std::io::ErrorKind::AlreadyExists,
+                        ErrorKind::AlreadyExists,
                         format!("File '{}' already exists, aborting operation", &self.output),
                     ));
                 }
 
-                let mut uwu_out_file = BufWriter::new(File::create(&self.output)?);
-                let uwu_progress_bar = progress_bar!();
-                self.uwuify_sentence(self.text, &mut uwu_out_file)?;
-
+                let uwu_progress_bar = progress_bar!(self.text.len() as u64);
+                self.uwuify_sentence(self.text, &mut BufWriter::new(File::create(&self.output)?))?;
                 uwu_progress_bar.finish_with_message("UwU'ifying Complete!");
-                Ok(())
             } else {
-                #[cfg(not(test))]
-                let stdout = std::io::stdout();
-                #[cfg(not(test))]
-                let mut out = BufWriter::new(stdout.lock());
-                #[cfg(test)]
-                let mut out = std::io::sink();
-                self.uwuify_sentence(self.text, &mut out)?;
-                #[cfg(not(test))]
-                out.write_all(b"\n")?;
-                Ok(())
+                self.uwuify_sentence(self.text, &mut BufWriter::new(stdout().lock()))?;
             }
         } else {
             // Handle File I/O
             if Path::new(&self.output).exists() {
                 return Err(Error::new(
-                    std::io::ErrorKind::AlreadyExists,
+                    ErrorKind::AlreadyExists,
                     format!("File '{}' already exists, aborting operation", &self.output),
                 ));
             }
 
-            let uwu_progress_bar = progress_bar!();
+            let infile = File::open(&self.input)?;
+            let uwu_progress_bar = progress_bar!(infile.metadata()?.len());
             self.uwuify_sentence(
-                unsafe {
-                    std::str::from_utf8_unchecked(
-                        memmap::Mmap::map(&File::open(&self.input)?)?.as_ref(),
-                    )
-                },
+                unsafe { from_utf8_unchecked(Mmap::map(&infile)?.as_ref()) },
                 &mut BufWriter::new(File::create(&self.output)?),
             )?;
             uwu_progress_bar.finish_with_message("UwU'ifying Complete!");
-            Ok(())
         }
+
+        Ok(())
     }
 
-    pub fn uwuify_sentence<T: Write>(
-        &mut self,
-        text: &str,
-        out: &mut T,
-    ) -> Result<(), std::io::Error> {
+    pub fn uwuify_sentence<T: Write>(&mut self, text: &str, out: &mut T) -> Result<(), Error> {
         text.lines().try_for_each(|line| {
             line.split_whitespace()
-                .map(|f| f.as_bytes())
+                .map(|word_str| word_str.as_bytes())
                 .try_for_each(|word| {
-                    let random_value = self.floating_rng.gen_range(0.0..1.0);
+                    let mut seeder = UwUSeeder::new(word, self.random);
+                    let random_value = seeder.random_float();
 
-                    if random_value <= self.faces {
-                        out.write_all(FACES[self.int_rng.gen_range(0..FACES_SIZE)])?;
-                        out.write_all(b" ")?;
-                    } else if random_value <= self.actions {
-                        out.write_all(ACTIONS[self.int_rng.gen_range(0..ACTIONS_SIZE)])?;
-                        out.write_all(b" ")?;
-                    } else if random_value <= self.stutters {
-                        (0..self.int_rng.gen_range(1..2))
-                            .into_iter()
-                            .try_for_each(|_| {
-                                match word[0] {
-                                    b'L' | b'R' => out.write_all(b"W"),
-                                    b'l' | b'r' => out.write_all(b"w"),
-                                    b => out.write_all(&[b]),
-                                }?;
-                                out.write_all(b"-")
-                            })?;
+                    if !self.is_runtime {
+                        if random_value <= self.faces {
+                            out.write_all(FACES[seeder.random_int(0..FACES_SIZE)])?;
+                        } else if random_value <= self.actions {
+                            out.write_all(ACTIONS[seeder.random_int(0..ACTIONS_SIZE)])?;
+                        } else if random_value <= self.stutters {
+                            match word[0] {
+                                b'L' | b'R' => out.write_all(b"W"),
+                                b'l' | b'r' => out.write_all(b"w"),
+                                byte => out.write_all(&[byte]),
+                            }?;
+                            out.write_all(b"-")?;
+                        }
+                    } else {
+                        if random_value <= self.faces {
+                            out.write_all(FACES[seeder.random_int(0..FACES_SIZE)])?;
+                        }
+                        if random_value <= self.actions {
+                            out.write_all(ACTIONS[seeder.random_int(0..ACTIONS_SIZE)])?;
+                        }
+                        if random_value <= self.stutters {
+                            match word[0] {
+                                b'L' | b'R' => out.write_all(b"W"),
+                                b'l' | b'r' => out.write_all(b"w"),
+                                byte => out.write_all(&[byte]),
+                            }?;
+                            out.write_all(b"-")?;
+                        }
                     }
 
                     if self
                         .linkify
-                        .links(unsafe { std::str::from_utf8_unchecked(word) })
+                        .links(unsafe { from_utf8_unchecked(word) })
                         .count()
                         > 0
                         || random_value > self.words
@@ -195,13 +192,13 @@ impl<'a> UwUify<'a> {
                         (0..word.len()).try_for_each(|index| match word[index] {
                             b'L' | b'R' => out.write_all(b"W"),
                             b'l' | b'r' => out.write_all(b"w"),
-                            b'E' | b'e' | b'A' | b'I' | b'O' | b'U' | b'a' | b'i' | b'o' | b'u' => {
+                            b'A' | b'E' | b'I' | b'O' | b'U' | b'a' | b'e' | b'i' | b'o' | b'u' => {
                                 match word.get(index - 1).unwrap_or(&word[0]) {
                                     b'N' | b'n' => out.write_all(&[b'y', word[index]]),
                                     _ => out.write_all(&[word[index]]),
                                 }
                             }
-                            b => out.write_all(&[b]),
+                            byte => out.write_all(&[byte]),
                         })?;
                     }
                     out.write_all(b" ")
