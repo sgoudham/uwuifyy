@@ -186,7 +186,7 @@ jobs:
           formula-name: ${{ env.BIN }}
           formula-path: Formula/${{ env.BIN }}.rb
           homebrew-tap: sgoudham/tap
-          download-url: https://github.com/sgoudham/${{ env.BIN }}/releases/download/${{ github.ref }}/${{ env.BIN }}-${{ matrix.target }}.tar.gz
+          download-url: https://github.com/sgoudham/${{ env.BIN }}/releases/download/${{ steps.extract-version.outputs.tag-name }}/${{ env.BIN }}-${{ matrix.target }}.tar.gz
           commit-message: |
             {{formulaName}} {{version}}
             
