@@ -10,7 +10,6 @@ pub struct UwUSeeder {
 }
 
 impl UwUSeeder {
-    #[inline]
     pub fn new(word: &[u8], random: bool) -> UwUSeeder {
         let rand_u64 = if !random {
             let mut hasher = AHasher::new_with_keys(0, 0);
@@ -25,12 +24,10 @@ impl UwUSeeder {
         }
     }
 
-    #[inline]
     pub fn random_float(&mut self) -> f64 {
         self.rng.gen_range(0.0..1.0)
     }
 
-    #[inline]
     pub fn random_int<T: SampleUniform, R: SampleRange<T>>(&mut self, range: R) -> T {
         self.rng.gen_range(range)
     }
