@@ -111,7 +111,7 @@ fn main() {
     set_hook(Box::new(|info| clap_panic!(info)));
 
     let matches = app!().get_matches();
-    match UwUify::new(
+    if let Err(err) = UwUify::new(
         matches.value_of("text"),
         matches.value_of("infile"),
         matches.value_of("outfile"),
@@ -128,9 +128,8 @@ fn main() {
     )
     .uwuify()
     {
-        Err(err) => clap_panic!(err),
-        _ => {}
-    };
+        clap_panic!(err);
+    }
 }
 
 fn is_between_zero_and_one(input: &str) -> Result<(), &'static str> {
