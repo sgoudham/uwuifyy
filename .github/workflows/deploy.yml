@@ -106,6 +106,18 @@ jobs:
           asset_path: ${{ env.BIN }}.tar.gz
           asset_name: ${{ env.BIN }}-${{ matrix.target }}.tar.gz
           asset_content_type: application/gzip
+      - uses: mislav/bump-homebrew-formula-action@v1
+        if: "!contains(github.ref, '-')" # skip prereleases
+        with:
+          formula-name: ${{ env.BIN }}
+          homebrew-tap: sgoudham/tap
+          download-url: https://github.com/sgoudham/${{ env.BIN }}/releases/download/${{ github.ref }}/${{ env.BIN }}-${{ matrix.target }}.tar.gz
+          commit-message: |
+            {{formulaName}} {{version}}
+            
+            Created by https://github.com/mislav/bump-homebrew-formula-action
+        env:
+          COMMITTER_TOKEN: ${{ secrets.HOMEBREW }}
 
   linux:
     runs-on: ubuntu-latest
@@ -145,3 +157,25 @@ jobs:
           asset_path: ${{ env.BIN }}.tar.gz
           asset_name: ${{ env.BIN }}-${{ matrix.target }}.tar.gz
           asset_content_type: application/gzip
+  homebrew:
+    name: Bump Homebrew formula
+    needs: macos
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract version
+        id: extract-version
+        run: |
+          printf "::set-output name=%s::%s\n" tag-name "${GITHUB_REF#refs/tags/}"
+      - uses: mislav/bump-homebrew-formula-action@v1
+        if: "!contains(github.ref, '-')" # skip prereleases
+        with:
+          formula-name: ${{ env.BIN }}
+          formula-path: Formula/${{ env.BIN }}.rb
+          homebrew-tap: sgoudham/tap
+          download-url: https://github.com/sgoudham/${{ env.BIN }}/releases/download/${{ github.ref }}/${{ env.BIN }}-${{ matrix.target }}.tar.gz
+          commit-message: |
+            {{formulaName}} {{version}}
+            
+            Created by https://github.com/mislav/bump-homebrew-formula-action
+        env:
+          COMMITTER_TOKEN: ${{ secrets.HOMEBREW }}
