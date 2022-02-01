@@ -47,11 +47,6 @@ jobs:
           7z a "${{ env.BIN }}.zip" "${{ env.BIN }}.exe"
           mv "${{ env.BIN }}.zip" $GITHUB_WORKSPACE
         shell: bash
-      - name: "Build Changelog"
-        id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@{latest-release}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: XAMPPRocky/create-release@v1.0.2
         id: create_release
         env:
@@ -59,7 +54,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          body: ${{steps.github_release.outputs.changelog}}
           draft: false
           prerelease: false
       - uses: actions/upload-release-asset@v1
@@ -90,11 +84,6 @@ jobs:
       - run: scripts/set_rust_version.bash stable ${{ matrix.target }}
       - run: scripts/build.bash cross ${{ matrix.target }} RELEASE
       - run: tar -czvf ${{ env.BIN }}.tar.gz --directory=target/${{ matrix.target }}/release ${{ env.BIN }}
-      - name: "Build Changelog"
-        id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@{latest-release}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: XAMPPRocky/create-release@v1.0.2
         id: create_release
         env:
@@ -102,7 +91,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          body: ${{steps.github_release.outputs.changelog}}
           draft: false
           prerelease: false
       - uses: actions/upload-release-asset@v1
@@ -114,18 +102,6 @@ jobs:
           asset_path: ${{ env.BIN }}.tar.gz
           asset_name: ${{ env.BIN }}-${{ matrix.target }}.tar.gz
           asset_content_type: application/gzip
-      - uses: mislav/bump-homebrew-formula-action@v1
-        if: "!contains(github.ref, '-')" # skip prereleases
-        with:
-          formula-name: ${{ env.BIN }}
-          homebrew-tap: sgoudham/tap
-          download-url: https://github.com/sgoudham/${{ env.BIN }}/releases/download/${{ github.ref }}/${{ env.BIN }}-${{ matrix.target }}.tar.gz
-          commit-message: |
-            {{formulaName}} {{version}}
-            
-            Created by https://github.com/mislav/bump-homebrew-formula-action
-        env:
-          COMMITTER_TOKEN: ${{ secrets.HOMEBREW }}
 
   linux:
     runs-on: ubuntu-latest
@@ -146,11 +122,6 @@ jobs:
       - run: scripts/set_rust_version.bash stable ${{ matrix.target }}
       - run: scripts/build.bash /tmp/cross ${{ matrix.target }} RELEASE
       - run: tar -czvf ${{ env.BIN }}.tar.gz --directory=target/${{ matrix.target }}/release ${{ env.BIN }}
-      - name: "Build Changelog"
-        id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@{latest-release}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: XAMPPRocky/create-release@v1.0.2
         id: create_release
         env:
@@ -158,7 +129,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          body: ${{steps.github_release.outputs.changelog}}
           draft: false
           prerelease: false
       - name: Upload Release Asset
@@ -171,6 +141,7 @@ jobs:
           asset_path: ${{ env.BIN }}.tar.gz
           asset_name: ${{ env.BIN }}-${{ matrix.target }}.tar.gz
           asset_content_type: application/gzip
+
   homebrew:
     name: Bump Homebrew formula
     needs: macos
@@ -185,10 +156,10 @@ jobs:
         with:
           formula-name: ${{ env.BIN }}
           formula-path: Formula/${{ env.BIN }}.rb
-          homebrew-tap: sgoudham/tap
-          download-url: https://github.com/sgoudham/${{ env.BIN }}/releases/download/${{ github.ref }}/${{ env.BIN }}-${{ matrix.target }}.tar.gz
+          homebrew-tap: sgoudham/homebrew-tap
+          download-url: https://github.com/sgoudham/${{ env.BIN }}/releases/download/${{ steps.extract-version.outputs.tag-name }}/${{ env.BIN }}-x86_64-apple-darwin.tar.gz
           commit-message: |
-            {{formulaName}} {{version}}
+            {{formulaName}} -> {{version}}
             
             Created by https://github.com/mislav/bump-homebrew-formula-action
         env:
