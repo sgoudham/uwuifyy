@@ -156,7 +156,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Update release
-        uses: johnwbyrd/update-release@v1
+        uses: johnwbyrd/update-release@v1.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN  }}
           body: ${{steps.github_release.outputs.changelog}}
@@ -177,7 +177,7 @@ jobs:
           formula-name: ${{ env.BIN }}
           formula-path: Formula/${{ env.BIN }}.rb
           homebrew-tap: sgoudham/tap
-          download-url: https://github.com/sgoudham/${{ env.BIN }}/releases/download/${{ steps.extract-version.outputs.tag-name }}/${{ env.BIN }}-${{ matrix.target }}.tar.gz
+          download-url: https://github.com/sgoudham/${{ env.BIN }}/releases/download/${{ steps.extract-version.outputs.tag-name }}/${{ env.BIN }}-x86_64-apple-darwin.tar.gz
           commit-message: |
             {{formulaName}} {{version}}
             
