@@ -159,7 +159,7 @@ jobs:
           homebrew-tap: sgoudham/homebrew-tap
           download-url: https://github.com/sgoudham/${{ env.BIN }}/releases/download/${{ steps.extract-version.outputs.tag-name }}/${{ env.BIN }}-x86_64-apple-darwin.tar.gz
           commit-message: |
-            {{formulaName}} {{version}}
+            {{formulaName}} -> {{version}}
             
             Created by https://github.com/mislav/bump-homebrew-formula-action
         env:
