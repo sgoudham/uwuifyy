@@ -1,5 +1,9 @@
 #![cfg_attr(all(feature = "bench", test), feature(test))]
 
+use indicatif::{ProgressBar, ProgressStyle};
+use linkify::{LinkFinder, LinkKind};
+use rand::{Rng, RngCore, SeedableRng};
+use rand_xoshiro::Xoshiro256Plus;
 use std::fs::File;
 use std::io::{BufWriter, Error, ErrorKind, Write};
 use std::path::Path;
@@ -192,6 +196,7 @@ impl<'a> UwUify<'a> {
                     } else {
                         if random_value <= self.faces {
                             out.write_all(FACES[random_int!(&mut seeder, 0..FACES_SIZE)])?;
+                            out.write_all(b" ")?;
                         }
                         if random_value <= self.actions {
                             out.write_all(ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;
