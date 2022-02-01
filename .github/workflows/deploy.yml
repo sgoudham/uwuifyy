@@ -176,7 +176,7 @@ jobs:
         with:
           formula-name: ${{ env.BIN }}
           formula-path: Formula/${{ env.BIN }}.rb
-          homebrew-tap: sgoudham/tap
+          homebrew-tap: sgoudham/homebrew-tap
           download-url: https://github.com/sgoudham/${{ env.BIN }}/releases/download/${{ steps.extract-version.outputs.tag-name }}/${{ env.BIN }}-x86_64-apple-darwin.tar.gz
           commit-message: |
             {{formulaName}} {{version}}
