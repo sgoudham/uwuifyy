@@ -1,9 +1,5 @@
 #![cfg_attr(all(feature = "bench", test), feature(test))]
 
-use indicatif::{ProgressBar, ProgressStyle};
-use linkify::{LinkFinder, LinkKind};
-use rand::{Rng, RngCore, SeedableRng};
-use rand_xoshiro::Xoshiro256Plus;
 use std::fs::File;
 use std::io::{BufWriter, Error, ErrorKind, Write};
 use std::path::Path;
