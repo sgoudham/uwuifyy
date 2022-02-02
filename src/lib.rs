@@ -5,6 +5,7 @@ use std::io::{BufWriter, Error, ErrorKind, Write};
 use std::path::Path;
 use std::str::from_utf8_unchecked;
 
+use ahash::RandomState;
 use linkify::{LinkFinder, LinkKind};
 use memmap::Mmap;
 
@@ -12,8 +13,6 @@ use constants::ACTIONS_SIZE;
 use constants::FACES;
 use constants::FACES_SIZE;
 use constants::{ACTIONS, ASCII, ASCII_SIZE};
-use rand::SeedableRng;
-use rand_xoshiro::Xoshiro256Plus;
 
 mod constants;
 
@@ -29,6 +28,14 @@ macro_rules! progress_bar {
 
         progress_bar
     }};
+}
+
+macro_rules! new_seeder {
+    ($word:expr,$seeder:expr) => {
+        <rand_xoshiro::Xoshiro256Plus as rand::SeedableRng>::seed_from_u64(
+            <[u8] as ahash::CallHasher>::get_hash($word, $seeder),
+        )
+    };
 }
 
 macro_rules! random_float {
@@ -52,7 +59,7 @@ pub struct UwUify<'a> {
     faces: f64,
     actions: f64,
     stutters: f64,
-    random: Xoshiro256Plus,
+    random: RandomState,
     ascii: bool,
     is_runtime: bool,
     linkify: LinkFinder,
@@ -68,7 +75,7 @@ impl<'a> Default for UwUify<'a> {
             faces: 0.05,
             actions: 0.125,
             stutters: 0.225,
-            random: Xoshiro256Plus::seed_from_u64(69420),
+            random: RandomState::with_seeds(69, 420, 96, 84),
             is_runtime: false,
             ascii: false,
             linkify: LinkFinder::new(),
@@ -104,7 +111,7 @@ impl<'a> UwUify<'a> {
         };
 
         if random {
-            uwuify.random = Xoshiro256Plus::from_entropy();
+            uwuify.random = RandomState::new();
         }
 
         if let Some(words) = words {
@@ -123,7 +130,7 @@ impl<'a> UwUify<'a> {
         uwuify
     }
 
-    pub fn uwuify(&mut self) -> Result<(), Error> {
+    pub fn uwuify(&self) -> Result<(), Error> {
         // Handle Text
         if !self.text.is_empty() {
             // Handle Text Output
@@ -164,19 +171,20 @@ impl<'a> UwUify<'a> {
         Ok(())
     }
 
-    pub fn uwuify_sentence<T: Write>(&mut self, text: &str, out: &mut T) -> Result<(), Error> {
+    pub fn uwuify_sentence<T: Write>(&self, text: &str, out: &mut T) -> Result<(), Error> {
         text.lines().try_for_each(|line| {
             line.split_whitespace()
                 .map(|word_str| word_str.as_bytes())
                 .try_for_each(|word| {
-                    let random_value = random_float!(&mut self.random);
+                    let mut seeder = new_seeder!(word, &self.random);
+                    let random_value = random_float!(&mut seeder);
 
                     if !self.is_runtime {
                         if random_value <= self.faces {
-                            out.write_all(FACES[random_int!(&mut self.random, 0..FACES_SIZE)])?;
+                            out.write_all(FACES[random_int!(&mut seeder, 0..FACES_SIZE)])?;
                             out.write_all(b" ")?;
                         } else if random_value <= self.actions {
-                            out.write_all(ACTIONS[random_int!(&mut self.random, 0..ACTIONS_SIZE)])?;
+                            out.write_all(ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;
                         } else if random_value <= self.stutters {
                             match word[0] {
                                 b'L' | b'R' => out.write_all(b"W"),
@@ -188,14 +196,14 @@ impl<'a> UwUify<'a> {
                     } else {
                         if random_value <= self.faces {
                             if self.ascii {
-                                out.write_all(ASCII[random_int!(&mut self.random, 0..ASCII_SIZE)])?;
+                                out.write_all(ASCII[random_int!(&mut seeder, 0..ASCII_SIZE)])?;
                             } else {
-                                out.write_all(FACES[random_int!(&mut self.random, 0..FACES_SIZE)])?;
+                                out.write_all(FACES[random_int!(&mut seeder, 0..FACES_SIZE)])?;
                             }
                             out.write_all(b" ")?;
                         }
                         if random_value <= self.actions {
-                            out.write_all(ACTIONS[random_int!(&mut self.random, 0..ACTIONS_SIZE)])?;
+                            out.write_all(ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;
                         }
                         if random_value <= self.stutters {
                             match word[0] {
@@ -242,7 +250,7 @@ mod tests {
     #[cfg(feature = "bench")]
     #[bench]
     fn uwu_bench(b: &mut test::Bencher) {
-        let mut uwuify = super::UwUify::new(
+        let uwuify = super::UwUify::new(
             Some(include_str!("test.txt")),
             None,
             None,
