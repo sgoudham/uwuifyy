@@ -26,6 +26,12 @@ macro_rules! app {
                     .display_order(1),
             )
             .arg(
+                Arg::new("ascii-only")
+                    .help("The output file will not use UTF-8 charecters")
+                    .long("ascii-only")
+                    .display_order(2),
+            )
+            .arg(
                 Arg::new("infile")
                     .help("The file to uwu'ify")
                     .short('i')
@@ -34,7 +40,7 @@ macro_rules! app {
                     .requires("outfile")
                     .value_name("FILE")
                     .value_hint(clap::ValueHint::FilePath)
-                    .display_order(2),
+                    .display_order(3),
             )
             .arg(
                 Arg::new("outfile")
@@ -43,7 +49,7 @@ macro_rules! app {
                     .long("outfile")
                     .value_name("FILE")
                     .value_hint(clap::ValueHint::FilePath)
-                    .display_order(3),
+                    .display_order(4),
             )
             .arg(
                 Arg::new("words")
@@ -53,7 +59,7 @@ macro_rules! app {
                     .value_name("VALUE")
                     .default_value("1")
                     .validator(is_between_zero_and_one)
-                    .display_order(4),
+                    .display_order(5),
             )
             .arg(
                 Arg::new("faces")
@@ -63,7 +69,7 @@ macro_rules! app {
                     .value_name("VALUE")
                     .default_value("0.05")
                     .validator(is_between_zero_and_one)
-                    .display_order(5),
+                    .display_order(6),
             )
             .arg(
                 Arg::new("actions")
@@ -73,7 +79,7 @@ macro_rules! app {
                     .value_name("VALUE")
                     .default_value("0.125")
                     .validator(is_between_zero_and_one)
-                    .display_order(6),
+                    .display_order(7),
             )
             .arg(
                 Arg::new("stutters")
@@ -83,14 +89,14 @@ macro_rules! app {
                     .value_name("VALUE")
                     .default_value("0.225")
                     .validator(is_between_zero_and_one)
-                    .display_order(7),
+                    .display_order(8),
             )
             .arg(
                 Arg::new("random")
                     .help("Flag to enable/disable random uwu'ifying")
                     .short('r')
                     .long("random")
-                    .display_order(8),
+                    .display_order(9),
             )
     };
 }
@@ -102,8 +108,8 @@ macro_rules! clap_panic {
 }
 
 macro_rules! is_runtime {
-    ($faces:expr, $actions:expr, $stutters:expr) => {
-        $faces > 0 || $actions > 0 || $stutters > 0
+    ($faces:expr, $actions:expr, $ascii:expr, $stutters:expr) => {
+        $faces > 0 || $actions > 0 || $ascii > 0 || $stutters > 0
     };
 }
 
@@ -119,10 +125,12 @@ fn main() {
         matches.value_of("faces"),
         matches.value_of("actions"),
         matches.value_of("stutters"),
+        matches.is_present("ascii-only"),
         matches.is_present("random"),
         is_runtime!(
             matches.occurrences_of("faces"),
             matches.occurrences_of("actions"),
+            matches.occurrences_of("ascii-only"),
             matches.occurrences_of("stutters")
         ),
     )

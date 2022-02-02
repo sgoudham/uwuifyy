@@ -1,5 +1,4 @@
 pub const FACES_SIZE: usize = 106;
-
 pub const FACES: [&[u8]; FACES_SIZE] = [
     b"OwO",
     b"UwU",
@@ -200,6 +199,55 @@ pub const FACES: [&[u8]; FACES_SIZE] = [
     // (　･ω･)☞
     kaomoji_ru::special::POINTING,
 ];
+
+pub const ASCII_SIZE: usize = ascii_len(&FACES);
+pub const ASCII: [&[u8]; ASCII_SIZE] = ascii_array(&FACES);
+
+pub const fn ascii_len(array: &[&[u8]]) -> usize {
+    let mut result = 0;
+    let len = array.len();
+    let mut head = 0;
+    while head != len {
+        let mut ascii_head = 0;
+        let ascii_len = array[head].len();
+        let mut ascii_res = 0;
+        while ascii_head != ascii_len {
+            if array[head][ascii_head].is_ascii() {
+                ascii_res += 1;
+            }
+            ascii_head += 1;
+        }
+        if ascii_res == array[head].len() {
+            result += 1;
+        }
+        head += 1;
+    }
+    result
+}
+
+pub const fn ascii_array(array: &'static [&'static [u8]]) -> [&'static [u8]; ASCII_SIZE] {
+    let mut ascii_array: [&'static [u8]; ASCII_SIZE] = [&[]; ASCII_SIZE];
+    let mut result_head = 0;
+    let len = array.len();
+    let mut head = 0;
+    while head != len {
+        let mut ascii_head = 0;
+        let ascii_len = array[head].len();
+        let mut ascii_res = 0;
+        while ascii_head != ascii_len {
+            if array[head][ascii_head].is_ascii() {
+                ascii_res += 1;
+            }
+            ascii_head += 1;
+        }
+        if ascii_res == array[head].len() {
+            ascii_array[result_head] = array[head];
+            result_head += 1;
+        }
+        head += 1;
+    }
+    ascii_array
+}
 
 pub const ACTIONS_SIZE: usize = 17;
 pub const ACTIONS: [&[u8]; ACTIONS_SIZE] = [
