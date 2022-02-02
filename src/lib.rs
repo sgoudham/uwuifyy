@@ -260,6 +260,7 @@ mod tests {
             None,
             false,
             false,
+            false,
         );
         b.iter(|| uwuify.uwuify());
     }
