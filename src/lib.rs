@@ -181,7 +181,11 @@ impl<'a> UwUify<'a> {
 
                     if !self.is_runtime {
                         if random_value <= self.faces {
-                            out.write_all(FACES[random_int!(&mut seeder, 0..FACES_SIZE)])?;
+                            if self.ascii {
+                                out.write_all(ASCII[random_int!(&mut seeder, 0..ASCII_SIZE)])?;
+                            } else {
+                                out.write_all(FACES[random_int!(&mut seeder, 0..FACES_SIZE)])?;
+                            }
                             out.write_all(b" ")?;
                         } else if random_value <= self.actions {
                             out.write_all(ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;

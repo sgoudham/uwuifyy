@@ -108,8 +108,8 @@ macro_rules! clap_panic {
 }
 
 macro_rules! is_runtime {
-    ($faces:expr, $actions:expr, $ascii:expr, $stutters:expr) => {
-        $faces > 0 || $actions > 0 || $ascii > 0 || $stutters > 0
+    ($faces:expr, $actions:expr, $stutters:expr) => {
+        $faces > 0 || $actions > 0 || $stutters > 0
     };
 }
 
@@ -130,7 +130,6 @@ fn main() {
         is_runtime!(
             matches.occurrences_of("faces"),
             matches.occurrences_of("actions"),
-            matches.occurrences_of("ascii-only"),
             matches.occurrences_of("stutters")
         ),
     )
