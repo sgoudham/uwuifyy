@@ -154,6 +154,7 @@ jobs:
       - uses: mislav/bump-homebrew-formula-action@v1
         if: "!contains(github.ref, '-')" # skip prereleases
         with:
+          create-pullrequest: true
           formula-name: ${{ env.BIN }}
           formula-path: Formula/${{ env.BIN }}.rb
           homebrew-tap: sgoudham/homebrew-tap
