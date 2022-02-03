@@ -138,7 +138,7 @@ $ source ~/.bash_profile
 6. Verify installation
 
 ```shell
-$ uwuifyy --help
+$ uwuifyy --version
 uwuifyy 0.2.0
 ```
 
