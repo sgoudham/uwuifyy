@@ -9,10 +9,9 @@ use ahash::RandomState;
 use linkify::{LinkFinder, LinkKind};
 use memmap::Mmap;
 
-use constants::ACTIONS_SIZE;
-use constants::FACES;
-use constants::FACES_SIZE;
-use constants::{ACTIONS, ASCII, ASCII_SIZE};
+use constants::{
+    ACTIONS, ACTIONS_SIZE, ASCII_FACES, ASCII_FACES_SIZE, MIXED_FACES, MIXED_FACES_SIZE,
+};
 
 mod constants;
 
@@ -182,11 +181,14 @@ impl<'a> UwUify<'a> {
                     if !self.is_runtime {
                         if random_value <= self.faces {
                             if self.ascii {
-                                out.write_all(ASCII[random_int!(&mut seeder, 0..ASCII_SIZE)])?;
+                                out.write_all(
+                                    ASCII_FACES[random_int!(&mut seeder, 0..ASCII_FACES_SIZE)],
+                                )?;
                             } else {
-                                out.write_all(FACES[random_int!(&mut seeder, 0..FACES_SIZE)])?;
+                                out.write_all(
+                                    MIXED_FACES[random_int!(&mut seeder, 0..MIXED_FACES_SIZE)],
+                                )?;
                             }
-                            out.write_all(b" ")?;
                         } else if random_value <= self.actions {
                             out.write_all(ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;
                         } else if random_value <= self.stutters {
@@ -200,11 +202,14 @@ impl<'a> UwUify<'a> {
                     } else {
                         if random_value <= self.faces {
                             if self.ascii {
-                                out.write_all(ASCII[random_int!(&mut seeder, 0..ASCII_SIZE)])?;
+                                out.write_all(
+                                    ASCII_FACES[random_int!(&mut seeder, 0..ASCII_FACES_SIZE)],
+                                )?;
                             } else {
-                                out.write_all(FACES[random_int!(&mut seeder, 0..FACES_SIZE)])?;
+                                out.write_all(
+                                    MIXED_FACES[random_int!(&mut seeder, 0..MIXED_FACES_SIZE)],
+                                )?;
                             }
-                            out.write_all(b" ")?;
                         }
                         if random_value <= self.actions {
                             out.write_all(ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;
