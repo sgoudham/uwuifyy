@@ -1,6 +1,6 @@
 [package]
 name = "uwuifyy"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 authors = ["Goudham Suresh <sgoudham@gmail.com>"]
 description = "A robust, customizable, blazingly-fast, efficient and easy-to-use command line application to uwu'ify your text!"
