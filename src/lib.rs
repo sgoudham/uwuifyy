@@ -11,6 +11,7 @@ use memmap::Mmap;
 
 use constants::{
     ACTIONS, ACTIONS_SIZE, ASCII_FACES, ASCII_FACES_SIZE, MIXED_FACES, MIXED_FACES_SIZE,
+    UNICODE_FACES, UNICODE_FACES_SIZE,
 };
 
 mod constants;
@@ -60,12 +61,13 @@ pub struct UwUify<'a> {
     text: &'a str,
     input: &'a str,
     output: &'a str,
+    ascii: bool,
+    unicode: bool,
+    random: RandomState,
     words: f64,
     faces: f64,
     actions: f64,
     stutters: f64,
-    random: RandomState,
-    ascii: bool,
     is_runtime: bool,
     linkify: LinkFinder,
 }
@@ -76,13 +78,14 @@ impl<'a> Default for UwUify<'a> {
             text: "",
             input: "",
             output: "",
+            ascii: false,
+            unicode: false,
+            random: RandomState::with_seeds(69, 420, 96, 84),
             words: 1.0,
             faces: 0.05,
             actions: 0.125,
             stutters: 0.225,
-            random: RandomState::with_seeds(69, 420, 96, 84),
             is_runtime: false,
-            ascii: false,
             linkify: LinkFinder::new(),
         }
     }
@@ -93,12 +96,13 @@ impl<'a> UwUify<'a> {
         text: Option<&'a str>,
         infile: Option<&'a str>,
         outfile: Option<&'a str>,
+        ascii: bool,
+        unicode: bool,
+        random: bool,
         words: Option<&'a str>,
         faces: Option<&'a str>,
         actions: Option<&'a str>,
         stutters: Option<&'a str>,
-        ascii: bool,
-        random: bool,
         is_runtime: bool,
     ) -> UwUify<'a> {
         let mut linkify = LinkFinder::new();
@@ -110,6 +114,7 @@ impl<'a> UwUify<'a> {
             input: infile.unwrap_or_default(),
             output: outfile.unwrap_or_default(),
             ascii,
+            unicode,
             is_runtime,
             linkify,
             ..Default::default()
@@ -191,6 +196,11 @@ impl<'a> UwUify<'a> {
                                     out,
                                     ASCII_FACES[random_int!(&mut seeder, 0..ASCII_FACES_SIZE)]
                                 )?;
+                            } else if self.unicode {
+                                write!(
+                                    out,
+                                    UNICODE_FACES[random_int!(&mut seeder, 0..UNICODE_FACES_SIZE)]
+                                )?;
                             } else {
                                 write!(
                                     out,
@@ -213,6 +223,11 @@ impl<'a> UwUify<'a> {
                                 write!(
                                     out,
                                     ASCII_FACES[random_int!(&mut seeder, 0..ASCII_FACES_SIZE)]
+                                )?;
+                            } else if self.unicode {
+                                write!(
+                                    out,
+                                    UNICODE_FACES[random_int!(&mut seeder, 0..UNICODE_FACES_SIZE)]
                                 )?;
                             } else {
                                 write!(
@@ -274,12 +289,13 @@ mod tests {
             Some(include_str!("test.txt")),
             None,
             None,
-            None,
-            None,
-            None,
-            None,
             false,
+            true,
             false,
+            None,
+            None,
+            None,
+            None,
             false,
         );
         b.iter(|| uwuify.uwuify());
