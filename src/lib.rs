@@ -49,6 +49,12 @@ macro_rules! random_int {
     };
 }
 
+macro_rules! write {
+    ($out:expr, $bytes:expr) => {
+        $out.write_all($bytes)
+    };
+}
+
 #[derive(Debug)]
 pub struct UwUify<'a> {
     text: &'a str,
@@ -181,46 +187,50 @@ impl<'a> UwUify<'a> {
                     if !self.is_runtime {
                         if random_value <= self.faces {
                             if self.ascii {
-                                out.write_all(
-                                    ASCII_FACES[random_int!(&mut seeder, 0..ASCII_FACES_SIZE)],
+                                write!(
+                                    out,
+                                    ASCII_FACES[random_int!(&mut seeder, 0..ASCII_FACES_SIZE)]
                                 )?;
                             } else {
-                                out.write_all(
-                                    MIXED_FACES[random_int!(&mut seeder, 0..MIXED_FACES_SIZE)],
+                                write!(
+                                    out,
+                                    MIXED_FACES[random_int!(&mut seeder, 0..MIXED_FACES_SIZE)]
                                 )?;
                             }
                         } else if random_value <= self.actions {
-                            out.write_all(ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;
+                            write!(out, ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;
                         } else if random_value <= self.stutters {
                             match word[0] {
-                                b'L' | b'R' => out.write_all(b"W"),
-                                b'l' | b'r' => out.write_all(b"w"),
-                                byte => out.write_all(&[byte]),
+                                b'L' | b'R' => write!(out, b"W"),
+                                b'l' | b'r' => write!(out, b"w"),
+                                byte => write!(out, &[byte]),
                             }?;
-                            out.write_all(b"-")?;
+                            write!(out, b"-")?;
                         }
                     } else {
                         if random_value <= self.faces {
                             if self.ascii {
-                                out.write_all(
-                                    ASCII_FACES[random_int!(&mut seeder, 0..ASCII_FACES_SIZE)],
+                                write!(
+                                    out,
+                                    ASCII_FACES[random_int!(&mut seeder, 0..ASCII_FACES_SIZE)]
                                 )?;
                             } else {
-                                out.write_all(
-                                    MIXED_FACES[random_int!(&mut seeder, 0..MIXED_FACES_SIZE)],
+                                write!(
+                                    out,
+                                    MIXED_FACES[random_int!(&mut seeder, 0..MIXED_FACES_SIZE)]
                                 )?;
                             }
                         }
                         if random_value <= self.actions {
-                            out.write_all(ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;
+                            write!(out, ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;
                         }
                         if random_value <= self.stutters {
                             match word[0] {
-                                b'L' | b'R' => out.write_all(b"W"),
-                                b'l' | b'r' => out.write_all(b"w"),
-                                byte => out.write_all(&[byte]),
+                                b'L' | b'R' => write!(out, b"W"),
+                                b'l' | b'r' => write!(out, b"w"),
+                                byte => write!(out, &[byte]),
                             }?;
-                            out.write_all(b"-")?;
+                            write!(out, b"-")?;
                         }
                     }
 
@@ -231,26 +241,27 @@ impl<'a> UwUify<'a> {
                         > 0
                         || random_value > self.words
                     {
-                        out.write_all(word)?;
+                        write!(out, word)?;
                     } else {
                         (0..word.len()).try_for_each(|index| match word[index] {
-                            b'L' | b'R' => out.write_all(b"W"),
-                            b'l' | b'r' => out.write_all(b"w"),
+                            b'L' | b'R' => write!(out, b"W"),
+                            b'l' | b'r' => write!(out, b"w"),
                             b'A' | b'E' | b'I' | b'O' | b'U' | b'a' | b'e' | b'i' | b'o' | b'u' => {
                                 match word.get(index - 1).unwrap_or(&word[0]) {
-                                    b'N' | b'n' => out.write_all(&[b'y', word[index]]),
-                                    _ => out.write_all(&[word[index]]),
+                                    b'N' | b'n' => write!(out, &[b'y', word[index]]),
+                                    _ => write!(out, &[word[index]]),
                                 }
                             }
-                            byte => out.write_all(&[byte]),
+                            byte => write!(out, &[byte]),
                         })?;
                     }
-                    out.write_all(b" ")
+                    write!(out, b" ")
                 })?;
-            out.write_all(b"\n")
+            write!(out, b"\n")
         })
     }
 }
+
 #[cfg(test)]
 mod tests {
     #[cfg(feature = "bench")]
