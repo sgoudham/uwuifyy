@@ -59,16 +59,16 @@ macro_rules! write {
 #[derive(Debug)]
 pub struct UwUify<'a> {
     text: &'a str,
-    input: &'a str,
-    output: &'a str,
-    ascii: bool,
-    unicode: bool,
+    infile: &'a str,
+    outfile: &'a str,
+    ascii_only: bool,
+    unicode_only: bool,
     random: RandomState,
     words: f64,
     faces: f64,
     actions: f64,
     stutters: f64,
-    is_runtime: bool,
+    supplied_at_runtime: bool,
     linkify: LinkFinder,
 }
 
@@ -76,16 +76,16 @@ impl<'a> Default for UwUify<'a> {
     fn default() -> Self {
         Self {
             text: "",
-            input: "",
-            output: "",
-            ascii: false,
-            unicode: false,
+            infile: "",
+            outfile: "",
+            ascii_only: false,
+            unicode_only: false,
             random: RandomState::with_seeds(69, 420, 96, 84),
             words: 1.0,
             faces: 0.05,
             actions: 0.125,
             stutters: 0.225,
-            is_runtime: false,
+            supplied_at_runtime: false,
             linkify: LinkFinder::new(),
         }
     }
@@ -96,14 +96,14 @@ impl<'a> UwUify<'a> {
         text: Option<&'a str>,
         infile: Option<&'a str>,
         outfile: Option<&'a str>,
-        ascii: bool,
-        unicode: bool,
+        ascii_only: bool,
+        unicode_only: bool,
         random: bool,
         words: Option<&'a str>,
         faces: Option<&'a str>,
         actions: Option<&'a str>,
         stutters: Option<&'a str>,
-        is_runtime: bool,
+        supplied_at_runtime: bool,
     ) -> UwUify<'a> {
         let mut linkify = LinkFinder::new();
         linkify.kinds(&[LinkKind::Email, LinkKind::Url]);
@@ -111,11 +111,11 @@ impl<'a> UwUify<'a> {
 
         let mut uwuify = UwUify {
             text: text.unwrap_or_default(),
-            input: infile.unwrap_or_default(),
-            output: outfile.unwrap_or_default(),
-            ascii,
-            unicode,
-            is_runtime,
+            infile: infile.unwrap_or_default(),
+            outfile: outfile.unwrap_or_default(),
+            ascii_only,
+            unicode_only,
+            supplied_at_runtime,
             linkify,
             ..Default::default()
         };
@@ -144,16 +144,19 @@ impl<'a> UwUify<'a> {
         // Handle Text
         if !self.text.is_empty() {
             // Handle Text Output
-            if !self.output.is_empty() {
-                if Path::new(&self.output).exists() {
+            if !self.outfile.is_empty() {
+                if Path::new(&self.outfile).exists() {
                     return Err(Error::new(
                         ErrorKind::AlreadyExists,
-                        format!("File '{}' already exists, aborting operation", &self.output),
+                        format!(
+                            "File '{}' already exists, aborting operation",
+                            &self.outfile
+                        ),
                     ));
                 }
 
                 let uwu_progress_bar = progress_bar!();
-                self.uwuify_sentence(self.text, &mut BufWriter::new(File::create(&self.output)?))?;
+                self.uwuify_sentence(self.text, &mut BufWriter::new(File::create(&self.outfile)?))?;
                 uwu_progress_bar.finish_with_message("UwU'ifying Complete!");
             } else {
                 #[cfg(not(test))]
@@ -163,17 +166,20 @@ impl<'a> UwUify<'a> {
             }
         } else {
             // Handle File I/O
-            if Path::new(&self.output).exists() {
+            if Path::new(&self.outfile).exists() {
                 return Err(Error::new(
                     ErrorKind::AlreadyExists,
-                    format!("File '{}' already exists, aborting operation", &self.output),
+                    format!(
+                        "File '{}' already exists, aborting operation",
+                        &self.outfile
+                    ),
                 ));
             }
 
             let uwu_progress_bar = progress_bar!();
             self.uwuify_sentence(
-                unsafe { from_utf8_unchecked(Mmap::map(&File::open(&self.input)?)?.as_ref()) },
-                &mut BufWriter::new(File::create(&self.output)?),
+                unsafe { from_utf8_unchecked(Mmap::map(&File::open(&self.infile)?)?.as_ref()) },
+                &mut BufWriter::new(File::create(&self.outfile)?),
             )?;
             uwu_progress_bar.finish_with_message("UwU'ifying Complete!");
         }
@@ -189,14 +195,14 @@ impl<'a> UwUify<'a> {
                     let mut seeder = new_seeder!(word, &self.random);
                     let random_value = random_float!(&mut seeder);
 
-                    if !self.is_runtime {
+                    if !self.supplied_at_runtime {
                         if random_value <= self.faces {
-                            if self.ascii {
+                            if self.ascii_only {
                                 write!(
                                     out,
                                     ASCII_FACES[random_int!(&mut seeder, 0..ASCII_FACES_SIZE)]
                                 )?;
-                            } else if self.unicode {
+                            } else if self.unicode_only {
                                 write!(
                                     out,
                                     UNICODE_FACES[random_int!(&mut seeder, 0..UNICODE_FACES_SIZE)]
@@ -219,12 +225,12 @@ impl<'a> UwUify<'a> {
                         }
                     } else {
                         if random_value <= self.faces {
-                            if self.ascii {
+                            if self.ascii_only {
                                 write!(
                                     out,
                                     ASCII_FACES[random_int!(&mut seeder, 0..ASCII_FACES_SIZE)]
                                 )?;
-                            } else if self.unicode {
+                            } else if self.unicode_only {
                                 write!(
                                     out,
                                     UNICODE_FACES[random_int!(&mut seeder, 0..UNICODE_FACES_SIZE)]
