@@ -18,7 +18,7 @@ macro_rules! app {
             )
             .arg(
                 Arg::new("text")
-                    .help("Text to uwu'ify")
+                    .help("The text to uwu'ify")
                     .short('t')
                     .long("text")
                     .value_name("TEXT")
@@ -47,20 +47,20 @@ macro_rules! app {
             )
             .arg(
                 Arg::new("ascii-only")
-                    .help("The output file will only include ASCII faces")
+                    .help("The uwu'ified text will only include ASCII faces")
                     .long("ascii-only")
                     .conflicts_with("unicode-only")
                     .display_order(4),
             )
             .arg(
                 Arg::new("unicode-only")
-                    .help("The output file will only include UTF-8 faces")
+                    .help("The uwu'ified text will only include UTF-8 faces")
                     .long("unicode-only")
                     .display_order(5),
             )
             .arg(
                 Arg::new("random")
-                    .help("Flag to enable/disable random uwu'ifying")
+                    .help("The flag to enable randomized uwu'ified text")
                     .short('r')
                     .long("random")
                     .display_order(6),
