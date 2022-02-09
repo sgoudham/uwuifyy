@@ -139,7 +139,7 @@ $ source ~/.bash_profile
 
 ```shell
 $ uwuifyy --version
-uwuifyy 0.2.0
+uwuifyy 0.3.0
 ```
 
 ## Rust \ Cargo
