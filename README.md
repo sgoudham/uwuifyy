@@ -21,7 +21,7 @@
         * [Binaries](#binaries)
             + [Windows](#windows)
             + [Linux \ macOS](#Linux-\-macOS)
-            + [Rust \ Cargo](#Rust-\-Cargo)
+        * [Rust \ Cargo](#Rust-\-Cargo)
     * [Usage](#usage)
         + [Text Input to Text Output](#text-input-to-text-output)
         + [Text Input to File Output](#text-input-to-file-output)
@@ -138,11 +138,11 @@ $ source ~/.bash_profile
 6. Verify installation
 
 ```shell
-$ uwuifyy --help
-uwuifyy 0.2.0
+$ uwuifyy --version
+uwuifyy 0.3.0
 ```
 
-### Rust \ Cargo
+## Rust \ Cargo
 
 Alternatively, if using Rust's package manager, `Cargo`, all that is needed is
 
@@ -162,14 +162,16 @@ USAGE:
     uwuifyy.exe [OPTIONS] <--text <TEXT>|--infile <FILE>>
 
 OPTIONS:
-    -t, --text <TEXT>         Text to uwu'ify
+    -t, --text <TEXT>         The text to uwu'ify
     -i, --infile <FILE>       The file to uwu'ify
     -o, --outfile <FILE>      The file to output uwu'ified text
+        --ascii-only          The uwu'ified text will only include ASCII faces
+        --unicode-only        The uwu'ified text will only include UTF-8 faces
+    -r, --random              The flag to enable randomized uwu'ified text
     -w, --words <VALUE>       The modifier to determine how many words to be uwu'ified [default: 1]
     -f, --faces <VALUE>       The modifier for uwu faces e.g hello -> hewwo [default: 0.05]
     -a, --actions <VALUE>     The modifier for actions e.g *shuffles over* [default: 0.125]
     -s, --stutters <VALUE>    The modifier for stutters e.g b-baka! [default: 0.225]
-    -r, --random              Flag to enable/disable random uwu'ifying
     -h, --help                Print help information
     -V, --version             Print version information
 ```

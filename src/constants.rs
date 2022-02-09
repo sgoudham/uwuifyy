@@ -1,252 +1,204 @@
-pub const FACES_SIZE: usize = 106;
-pub const FACES: [&[u8]; FACES_SIZE] = [
-    b"OwO",
-    b"UwU",
-    b">w<",
-    b"^w^",
-    b"^-^",
-    b":3",
-    b"x3",
-    b"xDD",
-    b";;w;;",
-    b">_<",
-    b">_>",
-    b"^.^",
-    b":33",
-    b"uWu",
-    // (* ^ ω ^)
-    kaomoji_ru::positive_emotions::JOY[0],
-    // (´ ∀ ` *)
-    kaomoji_ru::positive_emotions::JOY[1],
-    // (o^▽^o)
-    kaomoji_ru::positive_emotions::JOY[4],
-    // (⌒▽⌒)☆
-    kaomoji_ru::positive_emotions::JOY[5],
-    // <(￣︶￣)>
-    kaomoji_ru::positive_emotions::JOY[6],
-    // ヽ(・∀・)ﾉ
-    kaomoji_ru::positive_emotions::JOY[8],
-    // (´｡• ω •｡`)
-    kaomoji_ru::positive_emotions::JOY[9],
-    // (￣ω￣)
-    kaomoji_ru::positive_emotions::JOY[10],
-    // (o･ω･o)
-    kaomoji_ru::positive_emotions::JOY[12],
-    // ヽ(*・ω・)ﾉ
-    kaomoji_ru::positive_emotions::JOY[14],
-    // (^人^)
-    kaomoji_ru::positive_emotions::JOY[16],
-    // (*´▽`*)
-    kaomoji_ru::positive_emotions::JOY[18],
-    // ( ´ ω ` )
-    kaomoji_ru::positive_emotions::JOY[20],
-    // (≧◡≦)
-    kaomoji_ru::positive_emotions::JOY[22],
-    // (o´∀`o)
-    kaomoji_ru::positive_emotions::JOY[23],
-    // (´• ω •`)
-    kaomoji_ru::positive_emotions::JOY[24],
-    // (＾▽＾)
-    kaomoji_ru::positive_emotions::JOY[25],
-    // (⌒ω⌒)
-    kaomoji_ru::positive_emotions::JOY[26],
-    // ╰(▔∀▔)╯
-    kaomoji_ru::positive_emotions::JOY[28],
-    // (*^‿^*)
-    kaomoji_ru::positive_emotions::JOY[30],
-    // (✯◡✯)
-    kaomoji_ru::positive_emotions::JOY[32],
-    // (*≧ω≦*)
-    kaomoji_ru::positive_emotions::JOY[34],
-    // (☆▽☆)
-    kaomoji_ru::positive_emotions::JOY[35],
-    // ＼(≧▽≦)／
-    kaomoji_ru::positive_emotions::JOY[37],
-    // ヽ(o＾▽＾o)ノ
-    kaomoji_ru::positive_emotions::JOY[38],
-    // (*°▽°*)
-    kaomoji_ru::positive_emotions::JOY[40],
-    // (✧ω✧)
-    kaomoji_ru::positive_emotions::JOY[42],
-    // ヽ(*⌒▽⌒*)ﾉ
-    kaomoji_ru::positive_emotions::JOY[43],
-    // ヽ(>∀<☆)ノ
-    kaomoji_ru::positive_emotions::JOY[48],
-    // o(≧▽≦)o
-    kaomoji_ru::positive_emotions::JOY[49],
-    // (☆ω☆)
-    kaomoji_ru::positive_emotions::JOY[50],
-    // (っ˘ω˘ς )
-    kaomoji_ru::positive_emotions::JOY[51],
-    // \(★ω★)/
-    kaomoji_ru::positive_emotions::JOY[57],
-    // (╯✧▽✧)╯
-    kaomoji_ru::positive_emotions::JOY[60],
-    // o(>ω<)o
-    kaomoji_ru::positive_emotions::JOY[61],
-    // (´･ᴗ･ ` )
-    kaomoji_ru::positive_emotions::JOY[72],
-    // (￢‿￢ )
-    kaomoji_ru::positive_emotions::JOY[77],
-    // („• ᴗ •„)
-    kaomoji_ru::positive_emotions::JOY[84],
-    // (´ ω `♡)
-    kaomoji_ru::positive_emotions::LOVE[12],
-    // (♡°▽°♡)
-    kaomoji_ru::positive_emotions::LOVE[17],
-    // ♡(｡- ω -)
-    kaomoji_ru::positive_emotions::LOVE[18],
-    // (´｡• ω •｡`) ♡
-    kaomoji_ru::positive_emotions::LOVE[22],
-    // (❤ω❤)
-    kaomoji_ru::positive_emotions::LOVE[39],
-    // (´,,•ω•,,)♡
-    kaomoji_ru::positive_emotions::LOVE[45],
-    // (*ﾉωﾉ)
-    kaomoji_ru::positive_emotions::EMBARRESMENT[5],
-    // (⁄ ⁄•⁄ω⁄•⁄ ⁄)
-    kaomoji_ru::positive_emotions::EMBARRESMENT[17],
-    // (＃￣ω￣)
-    kaomoji_ru::negative_emotions::DISSATISFACTION[7],
-    // (＞ｍ＜)
-    kaomoji_ru::negative_emotions::DISSATISFACTION[9],
-    // (」°ロ°)」
-    kaomoji_ru::negative_emotions::DISSATISFACTION[10],
-    // (ᗒᗣᗕ)՞
-    kaomoji_ru::negative_emotions::DISSATISFACTION[24],
-    // (＃`Д´)
-    kaomoji_ru::negative_emotions::ANGER[0],
-    // (・`ω´・)
-    kaomoji_ru::negative_emotions::ANGER[4],
-    // (°ㅂ°╬)
-    kaomoji_ru::negative_emotions::ANGER[17],
-    // (╬ Ò﹏Ó)
-    kaomoji_ru::negative_emotions::ANGER[25],
-    // (´-ω-`)
-    kaomoji_ru::negative_emotions::SADNESS[2],
-    // (-ω-、)
-    kaomoji_ru::negative_emotions::SADNESS[6],
-    // ( ; ω ; )
-    kaomoji_ru::negative_emotions::SADNESS[9],
-    // ( ╥ω╥ )
-    kaomoji_ru::negative_emotions::SADNESS[16],
-    // (ノωヽ)
-    kaomoji_ru::negative_emotions::FEAR[0],
-    // (・_・ヾ
-    kaomoji_ru::neutral_emotions::CONFUSSION[5],
-    // ╮(￣ω￣;)╭
-    kaomoji_ru::neutral_emotions::CONFUSSION[10],
-    // (*・ω・)ﾉ
-    kaomoji_ru::various_actions::GREETING[0],
-    // (✧∀✧)/
-    kaomoji_ru::various_actions::GREETING[25],
-    // (つ≧▽≦)つ
-    kaomoji_ru::various_actions::HUGGING[1],
-    // (つ✧ω✧)つ
-    kaomoji_ru::various_actions::HUGGING[2],
-    // ⊂(´• ω •`⊂)
-    kaomoji_ru::various_actions::HUGGING[8],
-    // ⊂(･ω･*⊂)
-    kaomoji_ru::various_actions::HUGGING[9],
-    // (^ω~)
-    kaomoji_ru::various_actions::WINKING[3],
-    // |･ω･)
-    kaomoji_ru::various_actions::HIDING[0],
-    // ☆ﾐ(o*･ω･)ﾉ
-    kaomoji_ru::various_actions::RUNNING[0],
-    // C= C= C= C= C=┌(;・ω・)┘
-    kaomoji_ru::various_actions::RUNNING[1],
-    // ε===(っ≧ω≦)っ
-    kaomoji_ru::various_actions::RUNNING[6],
-    // (－ω－) zzZ
-    kaomoji_ru::various_actions::SLEEPING[3],
-    // (=^･ω･^=)
-    kaomoji_ru::animals::CAT[0],
-    // (=^･ｪ･^=)
-    kaomoji_ru::animals::CAT[1],
-    // (=①ω①=)
-    kaomoji_ru::animals::CAT[2],
-    // ( =ω=)..nyaa
-    kaomoji_ru::animals::CAT[3],
-    // (= ; ｪ ; =)
-    kaomoji_ru::animals::CAT[4],
-    // (=`ω´=)
-    kaomoji_ru::animals::CAT[5],
-    // (=^‥^=)
-    kaomoji_ru::animals::CAT[6],
-    // ( =ノωヽ=)
-    kaomoji_ru::animals::CAT[9],
-    // (=^ ◡ ^=)
-    kaomoji_ru::animals::CAT[11],
-    // (=^-ω-^=)
-    kaomoji_ru::animals::CAT[12],
-    // ヾ(=`ω´=)ノ”
-    kaomoji_ru::animals::CAT[13],
-    // (＾• ω •＾)
-    kaomoji_ru::animals::CAT[14],
-    // (/ =ω=)/
-    kaomoji_ru::animals::CAT[15],
-    // ฅ(•ㅅ•❀)ฅ
-    kaomoji_ru::animals::CAT[16],
-    // ଲ(ⓛ ω ⓛ)ଲ
-    kaomoji_ru::animals::CAT[18],
-    // (^=◕ᴥ◕=^)
-    kaomoji_ru::animals::CAT[19],
-    // ( =ω= )
-    kaomoji_ru::animals::CAT[20],
-    // (^◔ᴥ◔^)
-    kaomoji_ru::animals::CAT[25],
-    // (　･ω･)☞
-    kaomoji_ru::special::POINTING,
+pub const ASCII_FACES_SIZE: usize = 33;
+pub const ASCII_FACES: [&[u8]; ASCII_FACES_SIZE] = [
+    b"OwO ",
+    b"UwU ",
+    b">w< ",
+    b"^w^ ",
+    b"^-^ ",
+    b":3 ",
+    b"x3 ",
+    b"xDD ",
+    b";;w;; ",
+    b">_< ",
+    b">_> ",
+    b"^.^ ",
+    b":33 ",
+    b"uWu ",
+    b"(o^ ^o) ",
+    b"(o-_-o) ",
+    b"(*^.^*) ",
+    b"(--_--) ",
+    b"o(>< )o ",
+    b"(-_-) ",
+    b"(T_T) ",
+    b"(>_<) ",
+    b"~(>_<~) ",
+    b"(x_x)V ",
+    b"(;;;*_*) ",
+    b"{{ (>_<) }} ",
+    b"(o_O) ",
+    b"(O_O;) ",
+    b"(O.O) ",
+    b"(o_O)! ",
+    b"(^-^*)/ ",
+    b"(o^ ^o)/ ",
+    b"( ~*-*)~ ",
 ];
 
-pub const ASCII_SIZE: usize = ascii_len(&FACES);
-pub const ASCII: [&[u8]; ASCII_SIZE] = ascii_array(&FACES);
+pub const UNICODE_FACES_SIZE: usize = 66;
+pub const UNICODE_FACES: [&[u8]; UNICODE_FACES_SIZE] = [
+    // (* ^ ω ^)
+    b"(* ^ \xCF\x89 ^) ",
+    // (´ ∀ ` *)
+    b"(\xC2\xB4 \xE2\x88\x80 ` *) ",
+    // (o^▽^o)
+    b"(o^\xE2\x96\xBD^o) ",
+    // (⌒▽⌒)☆
+    b"(\xE2\x8C\x92\xE2\x96\xBD\xE2\x8C\x92)\xE2\x98\x86 ",
+    // ヽ(・∀・)ﾉ
+    b"\xE3\x83\xBD(\xE3\x83\xBB\xE2\x88\x80\xE3\x83\xBB)\xEF\xBE\x89 ",
+    // (￣ω￣)
+    b"(\xEF\xBF\xA3\xCF\x89\xEF\xBF\xA3) ",
+    // (o･ω･o)
+    b"(o\xEF\xBD\xA5\xCF\x89\xEF\xBD\xA5o) ",
+    // (^人^)
+    b"(^\xE4\xBA\xBA^) ",
+    // (*´▽`*)
+    b"(*\xC2\xB4\xE2\x96\xBD`*) ",
+    // (≧◡≦)
+    b"(\xE2\x89\xA7\xE2\x97\xA1\xE2\x89\xA6) ",
+    // (o´∀`o)
+    b"(o\xC2\xB4\xE2\x88\x80`o) ",
+    // (＾▽＾)
+    b"(\xEF\xBC\xBE\xE2\x96\xBD\xEF\xBC\xBE') ",
+    // (⌒ω⌒)
+    b"(\xE2\x8C\x92\xCF\x89\xE2\x8C\x92) ",
+    // ╰(▔∀▔)╯
+    b"\xE2\x95\xB0(\xE2\x96\x94\xE2\x88\x80\xE2\x96\x94)\xE2\x95\xAF ",
+    // (*^‿^*)
+    b"(*^\xE2\x80\xBF^*) ",
+    // (✯◡✯)
+    b"(\xE2\x9C\xAF\xE2\x97\xA1\xE2\x9C\xAF) ",
+    // (*≧ω≦*)
+    b"(*\xE2\x89\xA7\xCF\x89\xE2\x89\xA6*) ",
+    // (☆▽☆)
+    b"(\xE2\x98\x86\xE2\x96\xBD\xE2\x98\x86) ",
+    // ＼(≧▽≦)／
+    b"\xEF\xBC\xBC(\xE2\x89\xA7\xE2\x96\xBD\xE2\x89\xA6)\xEF\xBC\x8F ",
+    // (*°▽°*)
+    b"(*\xC2\xB0\xE2\x96\xBD\xC2\xB0*) ",
+    // (✧ω✧)
+    b"(\xE2\x9C\xA7\xCF\x89\xE2\x9C\xA7) ",
+    // ヽ(>∀<☆)ノ
+    b"\xE3\x83\xBD(>\xE2\x88\x80<\xE2\x98\x86)\xE3\x83\x8E ",
+    // o(≧▽≦)o
+    b"o(\xE2\x89\xA7\xE2\x96\xBD\xE2\x89\xA6)o ",
+    // (☆ω☆)
+    b"(\xE2\x98\x86\xCF\x89\xE2\x98\x86) ",
+    // (っ˘ω˘ς )
+    b"(\xE3\x81\xA3\xCB\x98\xCF\x89\xCB\x98\xCF\x82 ) ",
+    // \(★ω★)/
+    b"\\(\xE2\x98\x85\xCF\x89\xE2\x98\x85)/ ",
+    // (╯✧▽✧)╯
+    b"(\xE2\x95\xAF\xE2\x9C\xA7\xE2\x96\xBD\xE2\x9C\xA7)\xE2\x95\xAF ",
+    // o(>ω<)o
+    b"o(>\xCF\x89<)o ",
+    // (´ ω `♡)
+    b"(\xC2\xB4 \xCF\x89 `\xE2\x99\xA1) ",
+    // (♡°▽°♡)
+    b"(\xE2\x99\xA1\xC2\xB0\xE2\x96\xBD\xC2\xB0\xE2\x99\xA1) ",
+    // ♡(｡- ω -)
+    b"\xE2\x99\xA1(\xEF\xBD\xA1- \xCF\x89 -) ",
+    // (❤ω❤)
+    b"(\xE2\x9D\xA4\xCF\x89\xE2\x9D\xA4) ",
+    // (*ﾉωﾉ)
+    b"(*\xEF\xBE\x89\xCF\x89\xEF\xBE\x89) ",
+    // (＃￣ω￣)
+    b"(\xEF\xBC\x83\xEF\xBF\xA3\xCF\x89\xEF\xBF\xA3) ",
+    // (＞ｍ＜)
+    b"(\xEF\xBC\x9E\xEF\xBD\x8D\xEF\xBC\x9C) ",
+    // (ᗒᗣᗕ)՞
+    b"(\xE1\x97\x92\xE1\x97\xA3\xE1\x97\x95)\xD5\x9E ",
+    // (＃`Д´)
+    b"(\xEF\xBC\x83`\xD0\x94\xC2\xB4) ",
+    // (°ㅂ°╬)
+    b"(\xC2\xB0\xE3\x85\x82\xC2\xB0\xE2\x95\xAC) ",
+    // (╬ Ò﹏Ó)
+    b"(\xE2\x95\xAC \xC3\x92\xEF\xB9\x8F\xC3\x93) ",
+    // (´-ω-`)
+    b"(\xC2\xB4-\xCF\x89-`) ",
+    // (-ω-、)
+    b"(-\xCF\x89-\xE3\x80\x81) ",
+    // ( ╥ω╥ )
+    b"( \xE2\x95\xA5\xCF\x89\xE2\x95\xA5 ) ",
+    // (ノωヽ)
+    b"(\xE3\x83\x8E\xCF\x89\xE3\x83\xBD) ",
+    // (・_・ヾ
+    b"(\xE3\x83\xBB_\xE3\x83\xBB\xE3\x83\xBE ",
+    // ╮(￣ω￣;)╭
+    b"\xE2\x95\xAE(\xEF\xBF\xA3\xCF\x89\xEF\xBF\xA3;)\xE2\x95\xAD ",
+    // (*・ω・)ﾉ
+    b"(*\xE3\x83\xBB\xCF\x89\xE3\x83\xBB)\xEF\xBE\x89 ",
+    // (✧∀✧)/
+    b"(\xE2\x9C\xA7\xE2\x88\x80\xE2\x9C\xA7)/ ",
+    // (つ≧▽≦)つ
+    b"(\xE3\x81\xA4\xE2\x89\xA7\xE2\x96\xBD\xE2\x89\xA6)\xE3\x81\xA4 ",
+    // (つ✧ω✧)つ
+    b"(\xE3\x81\xA4\xE2\x9C\xA7\xCF\x89\xE2\x9C\xA7)\xE3\x81\xA4 ",
+    // ⊂(･ω･*⊂)
+    b"\xE2\x8A\x82(\xEF\xBD\xA5\xCF\x89\xEF\xBD\xA5*\xE2\x8A\x82) ",
+    // (^ω~)
+    b"(^\xCF\x89~) ",
+    // |･ω･)
+    b"|\xEF\xBD\xA5\xCF\x89\xEF\xBD\xA5) ",
+    // (=^･ω･^=)
+    b"(=^\xEF\xBD\xA5\xCF\x89\xEF\xBD\xA5^=) ",
+    // (=^･ｪ･^=)
+    b"(=^\xEF\xBD\xA5\xEF\xBD\xAA\xEF\xBD\xA5^=) ",
+    // (=①ω①=)
+    b"(=\xE2\x91\xA0\xCF\x89\xE2\x91\xA0=) ",
+    // ( =ω=)..nyaa
+    b"( =\xCF\x89=)..nyaa ",
+    // (=`ω´=)
+    b"(=`\xCF\x89\xC2\xB4=) ",
+    // (=^‥^=)
+    b"(=^\xE2\x80\xA5^=) ",
+    // ( =ノωヽ=)
+    b"(=^ \xE2\x97\xA1 ^=) ",
+    // (=^-ω-^=)
+    b"(\xEF\xBC\xBE\xE2\x80\xA2 \xCF\x89 \xE2\x80\xA2\xEF\xBC\xBE) ",
+    // ヾ(=`ω´=)ノ”
+    b"(/ =\xCF\x89=)/ ",
+    // (/ =ω=)/
+    b"\xE0\xB8\x85(\xE2\x80\xA2 \xC9\xAA \xE2\x80\xA2)\xE0\xB8\x85 ",
+    // ฅ(•ㅅ•❀)ฅ
+    b"\xE0\xAC\xB2(\xE2\x93\x9B \xCF\x89 \xE2\x93\x9B)\xE0\xAC\xB2 ",
+    // ( =ω= )
+    b"(^=\xE2\x97\x95\xE1\xB4\xA5\xE2\x97\x95=^) ",
+    // (^◔ᴥ◔^)
+    b"\xE0\xB8\x95(=\xCF\x89=)\xE0\xB8\x95 ",
+    // (　･ω･)☞
+    b"(\xE3\x80\x80\xEF\xBD\xA5\xCF\x89\xEF\xBD\xA5)\xE2\x98\x9E ",
+];
 
-pub const fn ascii_len(array: &[&[u8]]) -> usize {
-    let mut result = 0;
-    let len = array.len();
-    let mut head = 0;
-    while head != len {
-        let mut ascii_head = 0;
-        let ascii_len = array[head].len();
-        let mut ascii_res = 0;
-        while ascii_head != ascii_len {
-            if array[head][ascii_head].is_ascii() {
-                ascii_res += 1;
-            }
-            ascii_head += 1;
-        }
-        if ascii_res == array[head].len() {
-            result += 1;
-        }
-        head += 1;
-    }
-    result
+pub const MIXED_FACES_SIZE: usize = mixed_len(&ASCII_FACES, &UNICODE_FACES);
+pub const MIXED_FACES: [&[u8]; MIXED_FACES_SIZE] = mixed_array(&ASCII_FACES, &UNICODE_FACES);
+
+pub const fn mixed_len(ascii_array: &[&[u8]], unicode_array: &[&[u8]]) -> usize {
+    unicode_array.len() + ascii_array.len()
 }
 
-pub const fn ascii_array(array: &'static [&'static [u8]]) -> [&'static [u8]; ASCII_SIZE] {
-    let mut ascii_array: [&'static [u8]; ASCII_SIZE] = [&[]; ASCII_SIZE];
-    let mut result_head = 0;
-    let len = array.len();
-    let mut head = 0;
-    while head != len {
-        let mut ascii_head = 0;
-        let ascii_len = array[head].len();
-        let mut ascii_res = 0;
-        while ascii_head != ascii_len {
-            if array[head][ascii_head].is_ascii() {
-                ascii_res += 1;
-            }
-            ascii_head += 1;
-        }
-        if ascii_res == array[head].len() {
-            ascii_array[result_head] = array[head];
-            result_head += 1;
-        }
-        head += 1;
+pub const fn mixed_array(
+    ascii_array: &'static [&'static [u8]],
+    unicode_array: &'static [&'static [u8]],
+) -> [&'static [u8]; MIXED_FACES_SIZE] {
+    let mut mixed_array: [&'static [u8]; MIXED_FACES_SIZE] = [&[]; MIXED_FACES_SIZE];
+    let ascii_len = ascii_array.len();
+    let mut count = 0;
+    let mut second_count = 0;
+
+    while count < ascii_len {
+        mixed_array[count] = ascii_array[count];
+        count += 1;
     }
-    ascii_array
+
+    while count < MIXED_FACES_SIZE {
+        mixed_array[count] = unicode_array[second_count];
+        count += 1;
+        second_count += 1;
+    }
+
+    mixed_array
 }
 
 pub const ACTIONS_SIZE: usize = 17;

@@ -18,18 +18,12 @@ macro_rules! app {
             )
             .arg(
                 Arg::new("text")
-                    .help("Text to uwu'ify")
+                    .help("The text to uwu'ify")
                     .short('t')
                     .long("text")
                     .value_name("TEXT")
                     .required_unless_present_all(["infile", "outfile"])
                     .display_order(1),
-            )
-            .arg(
-                Arg::new("ascii-only")
-                    .help("The output file will not use UTF-8 charecters")
-                    .long("ascii-only")
-                    .display_order(2),
             )
             .arg(
                 Arg::new("infile")
@@ -40,7 +34,7 @@ macro_rules! app {
                     .requires("outfile")
                     .value_name("FILE")
                     .value_hint(clap::ValueHint::FilePath)
-                    .display_order(3),
+                    .display_order(2),
             )
             .arg(
                 Arg::new("outfile")
@@ -49,7 +43,27 @@ macro_rules! app {
                     .long("outfile")
                     .value_name("FILE")
                     .value_hint(clap::ValueHint::FilePath)
+                    .display_order(3),
+            )
+            .arg(
+                Arg::new("ascii-only")
+                    .help("The uwu'ified text will only include ASCII faces")
+                    .long("ascii-only")
+                    .conflicts_with("unicode-only")
                     .display_order(4),
+            )
+            .arg(
+                Arg::new("unicode-only")
+                    .help("The uwu'ified text will only include UTF-8 faces")
+                    .long("unicode-only")
+                    .display_order(5),
+            )
+            .arg(
+                Arg::new("random")
+                    .help("The flag to enable randomized uwu'ified text")
+                    .short('r')
+                    .long("random")
+                    .display_order(6),
             )
             .arg(
                 Arg::new("words")
@@ -59,7 +73,7 @@ macro_rules! app {
                     .value_name("VALUE")
                     .default_value("1")
                     .validator(is_between_zero_and_one)
-                    .display_order(5),
+                    .display_order(7),
             )
             .arg(
                 Arg::new("faces")
@@ -69,7 +83,7 @@ macro_rules! app {
                     .value_name("VALUE")
                     .default_value("0.05")
                     .validator(is_between_zero_and_one)
-                    .display_order(6),
+                    .display_order(8),
             )
             .arg(
                 Arg::new("actions")
@@ -79,7 +93,7 @@ macro_rules! app {
                     .value_name("VALUE")
                     .default_value("0.125")
                     .validator(is_between_zero_and_one)
-                    .display_order(7),
+                    .display_order(9),
             )
             .arg(
                 Arg::new("stutters")
@@ -89,14 +103,7 @@ macro_rules! app {
                     .value_name("VALUE")
                     .default_value("0.225")
                     .validator(is_between_zero_and_one)
-                    .display_order(8),
-            )
-            .arg(
-                Arg::new("random")
-                    .help("Flag to enable/disable random uwu'ifying")
-                    .short('r')
-                    .long("random")
-                    .display_order(9),
+                    .display_order(10),
             )
     };
 }
@@ -121,12 +128,13 @@ fn main() {
         matches.value_of("text"),
         matches.value_of("infile"),
         matches.value_of("outfile"),
+        matches.is_present("ascii-only"),
+        matches.is_present("unicode-only"),
+        matches.is_present("random"),
         matches.value_of("words"),
         matches.value_of("faces"),
         matches.value_of("actions"),
         matches.value_of("stutters"),
-        matches.is_present("ascii-only"),
-        matches.is_present("random"),
         is_runtime!(
             matches.occurrences_of("faces"),
             matches.occurrences_of("actions"),

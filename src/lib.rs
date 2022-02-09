@@ -1,7 +1,7 @@
 #![cfg_attr(all(feature = "bench", test), feature(test))]
 
 use std::fs::File;
-use std::io::{BufWriter, Error, ErrorKind, Write};
+use std::io::{BufWriter, Error, stdin, stdout, Write};
 use std::path::Path;
 use std::str::from_utf8_unchecked;
 
@@ -9,10 +9,10 @@ use ahash::RandomState;
 use linkify::{LinkFinder, LinkKind};
 use memmap::Mmap;
 
-use constants::ACTIONS_SIZE;
-use constants::FACES;
-use constants::FACES_SIZE;
-use constants::{ACTIONS, ASCII, ASCII_SIZE};
+use constants::{
+    ACTIONS, ACTIONS_SIZE, ASCII_FACES, ASCII_FACES_SIZE, MIXED_FACES, MIXED_FACES_SIZE,
+    UNICODE_FACES, UNICODE_FACES_SIZE,
+};
 
 mod constants;
 
@@ -50,18 +50,25 @@ macro_rules! random_int {
     };
 }
 
+macro_rules! write {
+    ($out:expr, $bytes:expr) => {
+        $out.write_all($bytes)
+    };
+}
+
 #[derive(Debug)]
 pub struct UwUify<'a> {
     text: &'a str,
-    input: &'a str,
-    output: &'a str,
+    infile: &'a str,
+    outfile: &'a str,
+    ascii_only: bool,
+    unicode_only: bool,
+    random: RandomState,
     words: f64,
     faces: f64,
     actions: f64,
     stutters: f64,
-    random: RandomState,
-    ascii: bool,
-    is_runtime: bool,
+    supplied_at_runtime: bool,
     linkify: LinkFinder,
 }
 
@@ -69,15 +76,16 @@ impl<'a> Default for UwUify<'a> {
     fn default() -> Self {
         Self {
             text: "",
-            input: "",
-            output: "",
+            infile: "",
+            outfile: "",
+            ascii_only: false,
+            unicode_only: false,
+            random: RandomState::with_seeds(69, 420, 96, 84),
             words: 1.0,
             faces: 0.05,
             actions: 0.125,
             stutters: 0.225,
-            random: RandomState::with_seeds(69, 420, 96, 84),
-            is_runtime: false,
-            ascii: false,
+            supplied_at_runtime: false,
             linkify: LinkFinder::new(),
         }
     }
@@ -88,13 +96,14 @@ impl<'a> UwUify<'a> {
         text: Option<&'a str>,
         infile: Option<&'a str>,
         outfile: Option<&'a str>,
+        ascii_only: bool,
+        unicode_only: bool,
+        random: bool,
         words: Option<&'a str>,
         faces: Option<&'a str>,
         actions: Option<&'a str>,
         stutters: Option<&'a str>,
-        ascii: bool,
-        random: bool,
-        is_runtime: bool,
+        supplied_at_runtime: bool,
     ) -> UwUify<'a> {
         let mut linkify = LinkFinder::new();
         linkify.kinds(&[LinkKind::Email, LinkKind::Url]);
@@ -102,10 +111,11 @@ impl<'a> UwUify<'a> {
 
         let mut uwuify = UwUify {
             text: text.unwrap_or_default(),
-            input: infile.unwrap_or_default(),
-            output: outfile.unwrap_or_default(),
-            ascii,
-            is_runtime,
+            infile: infile.unwrap_or_default(),
+            outfile: outfile.unwrap_or_default(),
+            ascii_only,
+            unicode_only,
+            supplied_at_runtime,
             linkify,
             ..Default::default()
         };
@@ -134,16 +144,25 @@ impl<'a> UwUify<'a> {
         // Handle Text
         if !self.text.is_empty() {
             // Handle Text Output
-            if !self.output.is_empty() {
-                if Path::new(&self.output).exists() {
-                    return Err(Error::new(
-                        ErrorKind::AlreadyExists,
-                        format!("File '{}' already exists, aborting operation", &self.output),
-                    ));
+            if !self.outfile.is_empty() {
+                if Path::new(&self.outfile).exists() {
+                    let mut overwrite_file = String::new();
+                    print!(
+                        "File '{}' already exists, would you like to overwrite this file? [Y/n] ",
+                        self.outfile
+                    );
+
+                    stdout().flush()?;
+                    stdin().read_line(&mut overwrite_file)?;
+
+                    if overwrite_file.to_lowercase().trim() != "y" {
+                        println!("Exiting...");
+                        return Ok(());
+                    }
                 }
 
                 let uwu_progress_bar = progress_bar!();
-                self.uwuify_sentence(self.text, &mut BufWriter::new(File::create(&self.output)?))?;
+                self.uwuify_sentence(self.text, &mut BufWriter::new(File::create(&self.outfile)?))?;
                 uwu_progress_bar.finish_with_message("UwU'ifying Complete!");
             } else {
                 #[cfg(not(test))]
@@ -153,17 +172,26 @@ impl<'a> UwUify<'a> {
             }
         } else {
             // Handle File I/O
-            if Path::new(&self.output).exists() {
-                return Err(Error::new(
-                    ErrorKind::AlreadyExists,
-                    format!("File '{}' already exists, aborting operation", &self.output),
-                ));
+            if Path::new(&self.outfile).exists() {
+                let mut overwrite_file = String::new();
+                print!(
+                    "File '{}' already exists, would you like to overwrite this file? [Y/n] ",
+                    self.outfile
+                );
+
+                stdout().flush()?;
+                stdin().read_line(&mut overwrite_file)?;
+
+                if overwrite_file.to_lowercase().trim() != "y" {
+                    println!("Exiting...");
+                    return Ok(());
+                }
             }
 
             let uwu_progress_bar = progress_bar!();
             self.uwuify_sentence(
-                unsafe { from_utf8_unchecked(Mmap::map(&File::open(&self.input)?)?.as_ref()) },
-                &mut BufWriter::new(File::create(&self.output)?),
+                unsafe { from_utf8_unchecked(Mmap::map(&File::open(&self.infile)?)?.as_ref()) },
+                &mut BufWriter::new(File::create(&self.outfile)?),
             )?;
             uwu_progress_bar.finish_with_message("UwU'ifying Complete!");
         }
@@ -179,43 +207,63 @@ impl<'a> UwUify<'a> {
                     let mut seeder = new_seeder!(word, &self.random);
                     let random_value = random_float!(&mut seeder);
 
-                    if !self.is_runtime {
+                    if !self.supplied_at_runtime {
                         if random_value <= self.faces {
-                            if self.ascii {
-                                out.write_all(ASCII[random_int!(&mut seeder, 0..ASCII_SIZE)])?;
+                            if self.ascii_only {
+                                write!(
+                                    out,
+                                    ASCII_FACES[random_int!(&mut seeder, 0..ASCII_FACES_SIZE)]
+                                )?;
+                            } else if self.unicode_only {
+                                write!(
+                                    out,
+                                    UNICODE_FACES[random_int!(&mut seeder, 0..UNICODE_FACES_SIZE)]
+                                )?;
                             } else {
-                                out.write_all(FACES[random_int!(&mut seeder, 0..FACES_SIZE)])?;
+                                write!(
+                                    out,
+                                    MIXED_FACES[random_int!(&mut seeder, 0..MIXED_FACES_SIZE)]
+                                )?;
                             }
-                            out.write_all(b" ")?;
                         } else if random_value <= self.actions {
-                            out.write_all(ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;
+                            write!(out, ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;
                         } else if random_value <= self.stutters {
                             match word[0] {
-                                b'L' | b'R' => out.write_all(b"W"),
-                                b'l' | b'r' => out.write_all(b"w"),
-                                byte => out.write_all(&[byte]),
+                                b'L' | b'R' => write!(out, b"W"),
+                                b'l' | b'r' => write!(out, b"w"),
+                                byte => write!(out, &[byte]),
                             }?;
-                            out.write_all(b"-")?;
+                            write!(out, b"-")?;
                         }
                     } else {
                         if random_value <= self.faces {
-                            if self.ascii {
-                                out.write_all(ASCII[random_int!(&mut seeder, 0..ASCII_SIZE)])?;
+                            if self.ascii_only {
+                                write!(
+                                    out,
+                                    ASCII_FACES[random_int!(&mut seeder, 0..ASCII_FACES_SIZE)]
+                                )?;
+                            } else if self.unicode_only {
+                                write!(
+                                    out,
+                                    UNICODE_FACES[random_int!(&mut seeder, 0..UNICODE_FACES_SIZE)]
+                                )?;
                             } else {
-                                out.write_all(FACES[random_int!(&mut seeder, 0..FACES_SIZE)])?;
+                                write!(
+                                    out,
+                                    MIXED_FACES[random_int!(&mut seeder, 0..MIXED_FACES_SIZE)]
+                                )?;
                             }
-                            out.write_all(b" ")?;
                         }
                         if random_value <= self.actions {
-                            out.write_all(ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;
+                            write!(out, ACTIONS[random_int!(&mut seeder, 0..ACTIONS_SIZE)])?;
                         }
                         if random_value <= self.stutters {
                             match word[0] {
-                                b'L' | b'R' => out.write_all(b"W"),
-                                b'l' | b'r' => out.write_all(b"w"),
-                                byte => out.write_all(&[byte]),
+                                b'L' | b'R' => write!(out, b"W"),
+                                b'l' | b'r' => write!(out, b"w"),
+                                byte => write!(out, &[byte]),
                             }?;
-                            out.write_all(b"-")?;
+                            write!(out, b"-")?;
                         }
                     }
 
@@ -226,26 +274,27 @@ impl<'a> UwUify<'a> {
                         > 0
                         || random_value > self.words
                     {
-                        out.write_all(word)?;
+                        write!(out, word)?;
                     } else {
                         (0..word.len()).try_for_each(|index| match word[index] {
-                            b'L' | b'R' => out.write_all(b"W"),
-                            b'l' | b'r' => out.write_all(b"w"),
+                            b'L' | b'R' => write!(out, b"W"),
+                            b'l' | b'r' => write!(out, b"w"),
                             b'A' | b'E' | b'I' | b'O' | b'U' | b'a' | b'e' | b'i' | b'o' | b'u' => {
                                 match word.get(index - 1).unwrap_or(&word[0]) {
-                                    b'N' | b'n' => out.write_all(&[b'y', word[index]]),
-                                    _ => out.write_all(&[word[index]]),
+                                    b'N' | b'n' => write!(out, &[b'y', word[index]]),
+                                    _ => write!(out, &[word[index]]),
                                 }
                             }
-                            byte => out.write_all(&[byte]),
+                            byte => write!(out, &[byte]),
                         })?;
                     }
-                    out.write_all(b" ")
+                    write!(out, b" ")
                 })?;
-            out.write_all(b"\n")
+            write!(out, b"\n")
         })
     }
 }
+
 #[cfg(test)]
 mod tests {
     #[cfg(feature = "bench")]
@@ -258,12 +307,13 @@ mod tests {
             Some(include_str!("test.txt")),
             None,
             None,
-            None,
-            None,
-            None,
-            None,
             false,
+            true,
             false,
+            None,
+            None,
+            None,
+            None,
             false,
         );
         b.iter(|| uwuify.uwuify());
