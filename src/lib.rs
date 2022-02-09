@@ -1,7 +1,7 @@
 #![cfg_attr(all(feature = "bench", test), feature(test))]
 
 use std::fs::File;
-use std::io::{BufWriter, Error, ErrorKind, Write};
+use std::io::{BufWriter, Error, stdin, stdout, Write};
 use std::path::Path;
 use std::str::from_utf8_unchecked;
 
@@ -146,13 +146,19 @@ impl<'a> UwUify<'a> {
             // Handle Text Output
             if !self.outfile.is_empty() {
                 if Path::new(&self.outfile).exists() {
-                    return Err(Error::new(
-                        ErrorKind::AlreadyExists,
-                        format!(
-                            "File '{}' already exists, aborting operation",
-                            &self.outfile
-                        ),
-                    ));
+                    let mut overwrite_file = String::new();
+                    print!(
+                        "File '{}' already exists, would you like to overwrite this file? [Y/n] ",
+                        self.outfile
+                    );
+
+                    stdout().flush()?;
+                    stdin().read_line(&mut overwrite_file)?;
+
+                    if overwrite_file.to_lowercase().trim() != "y" {
+                        println!("Exiting...");
+                        return Ok(());
+                    }
                 }
 
                 let uwu_progress_bar = progress_bar!();
@@ -167,13 +173,19 @@ impl<'a> UwUify<'a> {
         } else {
             // Handle File I/O
             if Path::new(&self.outfile).exists() {
-                return Err(Error::new(
-                    ErrorKind::AlreadyExists,
-                    format!(
-                        "File '{}' already exists, aborting operation",
-                        &self.outfile
-                    ),
-                ));
+                let mut overwrite_file = String::new();
+                print!(
+                    "File '{}' already exists, would you like to overwrite this file? [Y/n] ",
+                    self.outfile
+                );
+
+                stdout().flush()?;
+                stdin().read_line(&mut overwrite_file)?;
+
+                if overwrite_file.to_lowercase().trim() != "y" {
+                    println!("Exiting...");
+                    return Ok(());
+                }
             }
 
             let uwu_progress_bar = progress_bar!();
