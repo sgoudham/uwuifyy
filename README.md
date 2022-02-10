@@ -169,7 +169,7 @@ OPTIONS:
         --unicode-only        The uwu'ified text will only include UTF-8 faces
     -r, --random              The flag to enable randomized uwu'ified text
     -w, --words <VALUE>       The modifier to determine how many words to be uwu'ified [default: 1]
-    -f, --faces <VALUE>       The modifier for uwu faces e.g hello -> hewwo [default: 0.05]
+    -f, --faces <VALUE>       The modifier for uwu faces e.g hello -> (^-^*)/ hewwo [default: 0.05]
     -a, --actions <VALUE>     The modifier for actions e.g *shuffles over* [default: 0.125]
     -s, --stutters <VALUE>    The modifier for stutters e.g b-baka! [default: 0.225]
     -h, --help                Print help information
