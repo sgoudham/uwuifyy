@@ -77,7 +77,7 @@ macro_rules! app {
             )
             .arg(
                 Arg::new("faces")
-                    .help("The modifier for uwu faces e.g hello -> hewwo")
+                    .help("The modifier for uwu faces e.g hello -> (^-^*)/ hewwo")
                     .short('f')
                     .long("faces")
                     .value_name("VALUE")
