@@ -18,7 +18,7 @@
     * [Featuwes](#featuwes)
     * [Instawwation](#instawwation )
         * [Homebwew](#homebwew)
-        * [Binyawies ](#binyawies )
+        * [Binyawies](#binyawies)
             + [Windows](#windows)
             + [Winyux \ macOS](#winyux-\-macos)
         * [Wust \ Cawgo](#wust-\-cawgo)
