@@ -36,7 +36,7 @@
 
 ## About 
 
-H-Have you *shuffles closer* evew wanted to uwu'ify *looks away* text and wawge fiwes a-at bwazing fast speeds? Weww! You came to *teleports behind you* the wight 
+H-Have you *shuffles closer* evew wanted to uwu'ify *looks away* text and wawge fiwes a-at bwazing fast speeds? Weww! You came to \*teleports behind you\* the wight 
 pwace! `uwuifyy` 
 awwows you to _uwu'ify_ *looks away* text and fiwes fwom within youw own tewminyaw in an _extwemewy_ fast mannyew! 
 
@@ -45,7 +45,7 @@ awwows you to _uwu'ify_ *looks away* text and fiwes fwom within youw own tewminy
 (✧ω✧) - [-[x] _**BWAZINGWY FAST**_ (-(Check out *screams* -> [Benchmawks](#benchmawks)) 
 (✧ω✧) - [-[x] Seeded by d-defauwt to awwow (╬ Ò﹏Ó) fow wepwoducibwe w-wesuwts 
 (✧ω✧) - [-[x] Excwudes UWW's *screams* & Emaiws 
-(✧ω✧) - [-[x] *teleports behind you* UwU'ify fiwes avaiwabwe w-wocawwy on disk 
+(✧ω✧) - [-[x] \*teleports behind you\* UwU'ify fiwes avaiwabwe w-wocawwy on disk 
 (✧ω✧) - [-[x] Compwetewy customisabwe modifiews 
 
 ## Instawwation 
@@ -202,40 +202,40 @@ OPTIONS:
 
 ## Benchmawks 
 
-(✧ω✧) - ;;w;; Benchmawks/Tests cawwied out on a `Deww XPS 15` 
-(✧ω✧) - CPU: `11th Gen Intew(W) Cowe(TM) i7-11800H @ 2.30GHz` 
-(✧ω✧) - *teleports behind you* SSD: `-`NVMe Micwon 2300 1TB` 
+- (✧ω✧) - ;;w;; Benchmawks/Tests cawwied out on a `Deww XPS 15` 
+- (✧ω✧) - CPU: `11th Gen Intew(W) Cowe(TM) i7-11800H @ 2.30GHz` 
+- (✧ω✧) - \*teleports behind you\* SSD: `NVMe Micwon 2300 1TB` 
 
 ### The Compwete Wowks of Wiwwiam Shakespeawe 
 
-(✧ω✧) - [Dataset](https://www.kaggle.com/kewagbln/shakespeareonline) 
-(✧ω✧) - Size: `5.46 MiB` 
-(✧ω✧) - Time Taken: `< 1s` 
+- (✧ω✧) - [Dataset](https://www.kaggle.com/kewagbln/shakespeareonline) 
+- (✧ω✧) - Size: `5.46 MiB` 
+- (✧ω✧) - Time Taken: `< 1s` 
 
 ![](examples/gifs/william-shakespeare.gif) 
 
 ### 300k+ Tokyo 2020\21 O-Owympics T-Tweets 
 
-(✧ω✧) - [Dataset](https://www.kaggle.com/amritpal333/tokyo-olympics-2021-tweets) 
-(✧ω✧) - Size: `98.54 MiB` 
-(✧ω✧) - Time Taken: `1s` 
+- (✧ω✧) - [Dataset](https://www.kaggle.com/amritpal333/tokyo-olympics-2021-tweets) 
+- (✧ω✧) - Size: `98.54 MiB` 
+- (✧ω✧) - Time Taken: `1s` 
 
 ![](examples/gifs/tokyo-2020-olympics-tweets.gif) 
 
 ### 3.5M Tiktok Googwe Pway Weviews 
 
-(✧ω✧) - [Dataset](https://www.kaggle.com/shivamb/35-million-tiktok-mobile-app-reviews) 
-(✧ω✧) - Size: `-`543.02 MiB` 
-(✧ω✧) - TIme Taken: `4s` 
+- (✧ω✧) - [Dataset](https://www.kaggle.com/shivamb/35-million-tiktok-mobile-app-reviews) 
+- (✧ω✧) - Size: `543.02 MiB` 
+- (✧ω✧) - Time Taken: `4s` 
 
-!-![](examples/gifs/tiktok_app_reviews.gif) 
+![](examples/gifs/tiktok_app_reviews.gif) 
 
 ### 3.6M Amazon Weviews And Watings 
 
-(✧ω✧) - [Dataset](https://www.kaggle.com/bittlingmayer/amazonreviews?select=train.ft.txt.bz2) 
-(✧ω✧) - Size: `1.6 GiB` 
-(✧ω✧) - Time Taken: *cries* `21s` 
-(✧ω✧) - **DISCWAIMEW:** The input is a xDD 1.6GB fiwe and *teleports behind you* the output is a 2.2GB fiwe. They awe nyot *teleports behind you* incwuded in *teleports behind you* the wepo. 
+- (✧ω✧) - [Dataset](https://www.kaggle.com/bittlingmayer/amazonreviews?select=train.ft.txt.bz2) 
+- (✧ω✧) - Size: `1.6 GiB` 
+- (✧ω✧) - Time Taken: *cries* `21s` 
+- (✧ω✧) - **DISCWAIMEW:** The input is a xDD 1.6GB fiwe and \*teleports behind you\* the output is a 2.2GB fiwe. They awe nyot \*teleports behind you\* incwuded in \*teleports behind you\* the wepo. 
 
 ![](examples/gifs/amazon-ratings-reviews.gif) 
 
