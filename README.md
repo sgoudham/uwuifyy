@@ -214,7 +214,7 @@ OPTIONS:
 
 - [Dataset](https://www.kaggle.com/shivamb/35-million-tiktok-mobile-app-reviews)
 - Size: `543.02 MiB`
-- TIme Taken: `4s`
+- Time Taken: `4s`
 
 ![](examples/gifs/tiktok_app_reviews.gif)
 
