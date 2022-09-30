@@ -1,249 +1,239 @@
-# uwuifyy 
+# uwuifyy
 
-[![build](https://github.com/sgoudham/uwuifyy/actions/workflows/build.yml/badge.svg)](https://github.com/sgoudham/uwuifyy/actions/workflows/build.yml) 
-[![crate.io](https://img.shields.io/crates/v/uwuifyy)](https://crates.io/crates/uwuifyy) 
-[![downloads](https://img.shields.io/crates/d/uwuifyy)](https://crates.io/crates/uwuifyy) 
-[![license](https://img.shields.io/github/license/sgoudham/uwuifyy)](LICENSE) 
+[![build](https://github.com/sgoudham/uwuifyy/actions/workflows/build.yml/badge.svg)](https://github.com/sgoudham/uwuifyy/actions/workflows/build.yml)
+[![crate.io](https://img.shields.io/crates/v/uwuifyy)](https://crates.io/crates/uwuifyy)
+[![downloads](https://img.shields.io/crates/d/uwuifyy)](https://crates.io/crates/uwuifyy)
+[![license](https://img.shields.io/github/license/sgoudham/uwuifyy)](LICENSE)
 
-> *cuddles you* A wobust, customizabwe, bwazingwy-fast, efficient and easy-to-use command winye appwication to uwu'ify youw text! 
-> 
-!-![](logo/uwuifyy-logo.png) 
-> 
-> Wogo Cwedits: Jade Nyewson 
+> A robust, customizable, blazingly-fast, efficient and easy-to-use command line application to uwu'ify your text!
+>
+![](logo/uwuifyy-logo.png)
+>
+> Logo Credits: Jade Nelson
 
-## Tabwe O-Of Contents 
+## Table Of Contents
 
-- [uwuifyy](#uwuifyy) 
-  * [About](#about) 
-  * [Featuwes](#featuwes) 
-  * [Instawwation](#instawwation) 
-    * [Homebwew](#homebwew) 
-    * [Binyawies](#binyawies) 
-      + [W-Windows](#w-windows) 
-      + [Winyux \ macOS](#winyux--macos) 
-    * [Wust \ C-Cawgo](#wust--cawgo) 
-* [Usage](#usage) 
-  +  [Text I-Input to Text Output](#text-i-input-to-text-output) 
-  +  [Text I-Input to F-Fiwe Output](#text-i-input-to-f-fiwe-output) 
-  +  [F-Fiwe I-Input to F-Fiwe Output](#f-fiwe-i-input-to-f-fiwe-output) 
-* [Benchmawks](#benchmawks) 
-  + [The Compwete Wowks of Wiwwiam Shakespeawe](#the-compwete-wowks-of-wiwwiam-shakespeawe) 
-  + [300k+ Tokyo 2020\21 O-Owympics Tweets](#300k-tokyo-202021-o-owympics-t-tweets) 
-  + [3.5M Tiktok *teleports behind you* Googwe Pway Weviews](#35m-tiktok-googwe-pway-weviews) 
-  + [3.6M Amazon Weviews And Watings](#36m-amazon-weviews-and-watings) 
-* [W-Wicense](#w-wicense) 
-* [Acknyowwedgement](#acknyowwedgement) 
+- [uwuifyy](#uwuifyy)
+  - [Table Of Contents](#table-of-contents)
+  - [About](#about)
+  - [Features](#features)
+  - [Installation](#installation)
+    - [Homebrew](#homebrew)
+    - [Binaries](#binaries)
+    - [Windows](#windows)
+    - [Linux \ macOS](#linux--macos)
+  - [Rust \ Cargo](#rust--cargo)
+  - [Usage](#usage)
+    - [Text Input to Text Output](#text-input-to-text-output)
+    - [Text Input to File Output](#text-input-to-file-output)
+    - [File Input to File Output](#file-input-to-file-output)
+  - [Benchmarks](#benchmarks)
+    - [The Complete Works of William Shakespeare](#the-complete-works-of-william-shakespeare)
+    - [300k+ Tokyo 2020\21 Olympics Tweets](#300k-tokyo-202021-olympics-tweets)
+    - [3.5M Tiktok Google Play Reviews](#35m-tiktok-google-play-reviews)
+    - [3.6M Amazon Reviews And Ratings](#36m-amazon-reviews-and-ratings)
+  - [License](#license)
+  - [Acknowledgement](#acknowledgement)
 
-## About 
+## About
 
-H-Have you *shuffles closer* evew wanted to uwu'ify *looks away* text and wawge fiwes a-at bwazing fast speeds? Weww! You came to *teleports behind you* the wight 
-pwace! `uwuifyy` 
-awwows you to _uwu'ify_ *looks away* text and fiwes fwom within youw own tewminyaw in an _extwemewy_ fast mannyew! 
+Have you ever wanted to uwu'ify text and large files at blazing fast speeds? Well! You came to the right
+place! `uwuifyy`
+allows you to _uwu'ify_ text and files from within your own terminal in an _extremely_ fast manner!
+If you want an uwuifyy-ed version of this readme, head over to [README.uwu.md](README.uwu.md)
 
-## Featuwes 
+## Features
 
-(✧ω✧) - [-[x] _**BWAZINGWY FAST**_ (-(Check out *screams* -> [Benchmawks](#benchmawks)) 
-(✧ω✧) - [-[x] Seeded by d-defauwt to awwow (╬ Ò﹏Ó) fow wepwoducibwe w-wesuwts 
-(✧ω✧) - [-[x] Excwudes UWW's *screams* & Emaiws 
-(✧ω✧) - [-[x] *teleports behind you* UwU'ify fiwes avaiwabwe w-wocawwy on disk 
-(✧ω✧) - [-[x] Compwetewy customisabwe modifiews 
+- [x] _**BLAZINGLY FAST**_ (Check out -> [Benchmarks](#benchmarks))
+- [x] Seeded by default to allow for reproducible results
+- [x] Excludes URL's & Emails
+- [x] UwU'ify files available locally on disk
+- [x] Completely customisable modifiers
 
-## Instawwation 
+## Installation
 
-### Homebwew 
+### Homebrew
 
-Fow `macOS` *cuddles you* usews, instawwation thwough [Homebrew](https://brew.sh/) is wecommended. 
-
-```shell 
-$ bwew tap sgoudham/tap 
-$ bwew instaww uwuifyy 
-(╬ Ò﹏Ó) 
-``` 
-
-### Binyawies 
-
-Binyawies (╬ Ò﹏Ó) fow **Windows**, **macOS** *screams* & **Winyux** awe avaiwabwe with {{ (>_<) }} evewy 
-*cuddles you* singwe [release](https://github.com/sgoudham/uwuifyy/releases) 
-
-### W-Windows 
-
-1. Downwoad eithew `uwuifyy-x86_64-pc-windows-msvc.zip` ow `uwuifyy-x86_64-pc-windows-gnu.zip` 
-
-
-2-2. Extwact into `\bin` f-fowdew a-at *looks at you* `C:\youw\path\hewe\` 
-
-``` 
-(╬ Ò﹏Ó) 
-C: 
-|__youw 
-    |__path 
-        |__hewe 
-            |__bin 
-                |__uwuifyy.exe 
-(╬ Ò﹏Ó)
-``` 
-
-3. Set `uwuifyy.exe` in youw ヽ(・∀・)ﾉ path to *looks away* access it gwobawwy 
-
-```shell 
-$ setx ヽ(・∀・)ﾉ path *leans over* "%path%;C:\youw\path\hewe\bin" 
-(╬ Ò﹏Ó) 
-``` 
-
-4-4. Wefwesh command winye and vewify instawwation 
+For `macOS` users, installation through [Homebrew](https://brew.sh/) is recommended.
 
 ```shell
-$ uwuifyy --hewp 
-(╬ Ò﹏Ó) 
-``` 
+$ brew tap sgoudham/tap
+$ brew install uwuifyy
+```
 
-### Winyux \ macOS 
+### Binaries
 
-1. Downwoad `uwuifyy-x86_64-unknown-linux-gnu.tar.gz` ow `uwuifyy-x86_64-unknown-linux-musl.tar.gz` 
-ow `uwuifyy-x86_64-apple-darwin.tar.gz` 
+Binaries for **Windows**, **macOS** & **Linux** are available with every
+single [release](https://github.com/sgoudham/uwuifyy/releases)
+
+### Windows
+
+1. Download either `uwuifyy-x86_64-pc-windows-msvc.zip` or `uwuifyy-x86_64-pc-windows-gnu.zip`
 
 
-2-2. Extwact into youw *twerks* wocaw *leans over* diwectowy 
+2. Extract into `\bin` folder at `C:\your\path\here\`
 
-```shell
-# Winyux 
-$ *leans over* taw -xf uwuifyy-x86_64-unknown-linux-gnu.tar.gz 
-$ *leans over* taw -xf uwuifyy-x86_64-unknown-linux-musl.tar.gz 
+```
+C:
+|__your
+    |__path
+        |__here
+            |__bin
+                |__uwuifyy.exe
+```
 
-# macOS 
-$ *leans over* taw -xf uwuifyy-x86_64-apple-darwin.tar.gz 
-(╬ Ò﹏Ó) 
-``` 
-
-3. Move into `~/bin` 
-
-```shell
-# Cweate ~/bin if it does nyot exist 
-$ mkdiw -p ~/bin 
-$ mv uwuifyy ~/bin 
-(╬ Ò﹏Ó) 
-``` 
-
-4-4. Set pewmissions (╬ Ò﹏Ó) fow executabwe 
+3. Set `uwuifyy.exe` in your path to access it globally
 
 ```shell
-$ *notices bulge* chmod 755 ~/bin/uwuifyy 
-(╬ Ò﹏Ó) 
-``` 
+$ setx path "%path%;C:\your\path\here\bin"
+```
 
-5. Update `PATH` to use gwobawwy 
+4. Refresh command line and verify installation
 
-```sheww 
-# Winyux 
-$ echo 'expowt PATH=~/bin:$PATH' (O.O) >> ~/.bashrc 
-$ souwce ~/.bashrc 
+```shell
+$ uwuifyy --help
+```
 
-# macOS 
-$ echo 'expowt PATH=~/bin:$PATH' (O.O) >> ~/.bash_profile 
-$ souwce ~/.bash_profile 
-(╬ Ò﹏Ó)
-``` 
+### Linux \ macOS
 
-6. Vewify instawwation 
+1. Download `uwuifyy-x86_64-unknown-linux-gnu.tar.gz` or `uwuifyy-x86_64-unknown-linux-musl.tar.gz`
+   or `uwuifyy-x86_64-apple-darwin.tar.gz`
 
-```shell 
-$ uwuifyy ----vewsion 
-uwuifyy 0.3.0 
-(╬ Ò﹏Ó)
-``` 
 
-## Wust \ Cawgo 
+2. Extract into your local directory
 
-Awtewnyativewy, if using Wust's package manyagew, `Cawgo`, (＾▽＾') aww that is n-nyeeded is 
+```shell
+# Linux
+$ tar -xf uwuifyy-x86_64-unknown-linux-gnu.tar.gz
+$ tar -xf uwuifyy-x86_64-unknown-linux-musl.tar.gz
 
-```shell 
-$ c-cawgo instaww uwuifyy 
-(╬ Ò﹏Ó)
-``` 
+# macOS
+$ tar -xf uwuifyy-x86_64-apple-darwin.tar.gz
+```
 
-If you (^-^*)/ do nyot have `Cawgo` avaiwabwe on youw machinye, you *moans* can downwoad it as pawt of 
-Wust [here](https://www.rust-lang.org/tools/install) 
+3. Move into `~/bin`
 
-## Usage 
+```shell
+# Create ~/bin if it does not exist
+$ mkdir -p ~/bin
+$ mv uwuifyy ~/bin
+```
+
+4. Set permissions for executable
+
+```shell
+$ chmod 755 ~/bin/uwuifyy
+```
+
+5. Update `PATH` to use globally
+
+```shell
+# Linux
+$ echo 'export PATH=~/bin:$PATH' >> ~/.bashrc 
+$ source ~/.bashrc
+
+# macOS
+$ echo 'export PATH=~/bin:$PATH' >> ~/.bash_profile
+$ source ~/.bash_profile
+```
+
+6. Verify installation
+
+```shell
+$ uwuifyy --version
+uwuifyy 0.3.0
+```
+
+## Rust \ Cargo
+
+Alternatively, if using Rust's package manager, `Cargo`, all that is needed is
+
+```shell
+$ cargo install uwuifyy
+```
+
+If you do not have `Cargo` available on your machine, you can download it as part of
+Rust [here](https://www.rust-lang.org/tools/install)
+
+## Usage
 
 ```commandline
-$ uwuifyy --hewp 
+$ uwuifyy --help
 
-*screams* USAGE: 
-uwuifyy.exe [OPTIONS] >_> <--text <TEXT>|--infiwe <-<FIWE>> 
+USAGE:
+    uwuifyy.exe [OPTIONS] <--text <TEXT>|--infile <FILE>>
 
-OPTIONS: 
-*leans over* -t, --text <TEXT> The *looks away* text to uwu'ify 
--i, --infiwe <FIWE> The fiwe to uwu'ify 
----o, --outfiwe <FIWE> The fiwe to output uwu'ified *looks away* text 
---ascii-onwy The uwu'ified *looks away* text wiww onwy i-incwude ASCII faces 
---unyicode-onwy The uwu'ified *looks away* text wiww onwy i-incwude *giggles shyly* UTF-8 faces 
--w, --wandom The fwag to enyabwe wandomized uwu'ified *looks away* text 
--w, --wowds <VAWUE> The modifiew to detewminye how many *sweats* wowds to be uwu'ified [defauwt: 1] 
--f, --faces <VAWUE> The modifiew (╬ Ò﹏Ó) fow uwu faces e.g hewwo *screams* -> (^-^*)/ hewwo [defauwt: 0.05] 
----a, --actions <VAWUE> The modifiew (╬ Ò﹏Ó) fow actions e.g xDD *shuffwes ovew* [defauwt: 0.125] 
-*hugs tightly* -s, ----stuttews <VAWUE> The modifiew (╬ Ò﹏Ó) fow *shuffles closer* stuttews e.g b-baka! [defauwt: *screams* 0.225] 
-*twerks* -h, --hewp Pwint hewp infowmation 
----V, ----vewsion Pwint vewsion infowmation 
-(╬ Ò﹏Ó)
-``` 
+OPTIONS:
+    -t, --text <TEXT>         The text to uwu'ify
+    -i, --infile <FILE>       The file to uwu'ify
+    -o, --outfile <FILE>      The file to output uwu'ified text
+        --ascii-only          The uwu'ified text will only include ASCII faces
+        --unicode-only        The uwu'ified text will only include UTF-8 faces
+    -r, --random              The flag to enable randomized uwu'ified text
+    -w, --words <VALUE>       The modifier to determine how many words to be uwu'ified [default: 1]
+    -f, --faces <VALUE>       The modifier for uwu faces e.g hello -> (^-^*)/ hewwo [default: 0.05]
+    -a, --actions <VALUE>     The modifier for actions e.g *shuffles over* [default: 0.125]
+    -s, --stutters <VALUE>    The modifier for stutters e.g b-baka! [default: 0.225]
+    -h, --help                Print help information
+    -V, --version             Print version information
+```
 
-### Text I-Input to Text Output 
+### Text Input to Text Output
 
-![](examples/gifs/text-input-to-text-output.gif) 
+![](examples/gifs/text-input-to-text-output.gif)
 
-### Text I-Input to F-Fiwe Output 
+### Text Input to File Output
 
-![](examples/gifs/text-input-to-file-output.gif) 
+![](examples/gifs/text-input-to-file-output.gif)
 
-### F-Fiwe I-Input to F-Fiwe Output 
+### File Input to File Output
 
-![](examples/gifs/text-file-to-file-output.gif) 
+![](examples/gifs/text-file-to-file-output.gif)
 
-## Benchmawks 
+## Benchmarks
 
-(✧ω✧) - ;;w;; Benchmawks/Tests cawwied out on a `Deww XPS 15` 
-(✧ω✧) - CPU: `11th Gen Intew(W) Cowe(TM) i7-11800H @ 2.30GHz` 
-(✧ω✧) - *teleports behind you* SSD: `-`NVMe Micwon 2300 1TB` 
+- Benchmarks/Tests carried out on a `Dell XPS 15`
+    - CPU: `11th Gen Intel(R) Core(TM) i7-11800H @ 2.30GHz`
+    - SSD: `NVMe Micron 2300 1TB`
 
-### The Compwete Wowks of Wiwwiam Shakespeawe 
+### The Complete Works of William Shakespeare
 
-(✧ω✧) - [Dataset](https://www.kaggle.com/kewagbln/shakespeareonline) 
-(✧ω✧) - Size: `5.46 MiB` 
-(✧ω✧) - Time Taken: `< 1s` 
+- [Dataset](https://www.kaggle.com/kewagbln/shakespeareonline)
+- Size: `5.46 MiB`
+- Time Taken: `< 1s`
 
-![](examples/gifs/william-shakespeare.gif) 
+![](examples/gifs/william-shakespeare.gif)
 
-### 300k+ Tokyo 2020\21 O-Owympics T-Tweets 
+### 300k+ Tokyo 2020\21 Olympics Tweets
 
-(✧ω✧) - [Dataset](https://www.kaggle.com/amritpal333/tokyo-olympics-2021-tweets) 
-(✧ω✧) - Size: `98.54 MiB` 
-(✧ω✧) - Time Taken: `1s` 
+- [Dataset](https://www.kaggle.com/amritpal333/tokyo-olympics-2021-tweets)
+- Size: `98.54 MiB`
+- Time Taken: `1s`
 
-![](examples/gifs/tokyo-2020-olympics-tweets.gif) 
+![](examples/gifs/tokyo-2020-olympics-tweets.gif)
 
-### 3.5M Tiktok Googwe Pway Weviews 
+### 3.5M Tiktok Google Play Reviews
 
-(✧ω✧) - [Dataset](https://www.kaggle.com/shivamb/35-million-tiktok-mobile-app-reviews) 
-(✧ω✧) - Size: `-`543.02 MiB` 
-(✧ω✧) - TIme Taken: `4s` 
+- [Dataset](https://www.kaggle.com/shivamb/35-million-tiktok-mobile-app-reviews)
+- Size: `543.02 MiB`
+- TIme Taken: `4s`
 
-!-![](examples/gifs/tiktok_app_reviews.gif) 
+![](examples/gifs/tiktok_app_reviews.gif)
 
-### 3.6M Amazon Weviews And Watings 
+### 3.6M Amazon Reviews And Ratings
 
-(✧ω✧) - [Dataset](https://www.kaggle.com/bittlingmayer/amazonreviews?select=train.ft.txt.bz2) 
-(✧ω✧) - Size: `1.6 GiB` 
-(✧ω✧) - Time Taken: *cries* `21s` 
-(✧ω✧) - **DISCWAIMEW:** The input is a xDD 1.6GB fiwe and *teleports behind you* the output is a 2.2GB fiwe. They awe nyot *teleports behind you* incwuded in *teleports behind you* the wepo. 
+- [Dataset](https://www.kaggle.com/bittlingmayer/amazonreviews?select=train.ft.txt.bz2)
+- Size: `1.6 GiB`
+- Time Taken: `21s`
+- **DISCLAIMER:** The input is a 1.6GB file and the output is a 2.2GB file. They are not included in the repo.
 
-![](examples/gifs/amazon-ratings-reviews.gif) 
+![](examples/gifs/amazon-ratings-reviews.gif)
 
-## W-Wicense 
+## License
 
-[MIT Wicense](WICENSE) 
+[MIT License](LICENSE)
 
-## Acknyowwedgement 
+## Acknowledgement
 
-This pwoject is inspiwed fwom onye of many existing nyowmaw to uwu convewtews: 
-[Uwuifier](https://github.com/Schotsl/Uwuifier-node) 
+This project is inspired from one of many existing normal to uwu converters:
+[Uwuifier](https://github.com/Schotsl/Uwuifier-node)
