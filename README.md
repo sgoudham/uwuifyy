@@ -18,6 +18,7 @@
     * [Features](#features)
     * [Installation](#installation)
         * [Homebrew](#homebrew)
+        * [AUR](#aur)
         * [Binaries](#binaries)
             + [Windows](#windows)
             + [Linux \ macOS](#Linux-\-macOS)
@@ -57,6 +58,14 @@ For `macOS` users, installation through [Homebrew](https://brew.sh/) is recommen
 ```shell
 $ brew tap sgoudham/tap
 $ brew install uwuifyy
+```
+
+### AUR
+
+`Arch Linux` users can install `uwuifyy` through the [AUR](https://aur.archlinux.org/) using an [AUR helper](https://wiki.archlinux.org/title/AUR_helpers).
+
+```shell
+$ paru uwuifyy
 ```
 
 ### Binaries

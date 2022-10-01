@@ -18,6 +18,7 @@
     * [Featuwes](#featuwes)
     * [Instawwation](#instawwation)
         * [Homebwew](#homebwew)
+        * [AUW](#auw)
         * [Binyawies](#binyawies)
             + [Windows](#windows)
             + [Winyux \ macOS](#winyux-\-macos)
@@ -55,6 +56,14 @@ Fow *cuddles you* `macOs` usews, instawwation thwough [Homebwew](https://brew.sh
 ```shell
 $ brew tap sgoudham/tap
 $ brew install uwuifyy
+```
+
+### AUW
+
+`Arch Linux` usews *moans* can instaww `uwuifyy` thwough *teleports behind you* the [AUW](https://aur.archlinux.org/) using an [AUW helper](https://wiki.archlinux.org/title/AUR_helpers).
+
+```shell
+$ paru uwuifyy
 ```
 
 ### Binyawies 
