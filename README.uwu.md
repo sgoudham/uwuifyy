@@ -28,7 +28,7 @@
         + [Fiwe I-Input to F-Fiwe Output](#fiwe-i-input-to-f-fiwe-output) 
     * [Benchmawks](#benchmawks) 
         + [The Compwete Wowks of Wiwwiam Shakespeawe](#the-compwete-wowks-of-wiwwiam-shakespeawe)
-        + [300k+ Tokyo 2020\21 O-Owympics Tweets](#300k+-tokyo-2020\21-o-owympics-tweets) 
+        + [300k+ Tokyo 2020\21 O-Owympics Tweets](#300k%2B-tokyo-2020\21-o-owympics-tweets) 
         + [3.5M Tiktok Googwe Pway Weviews](#35m-tiktok-googwe-pway-weviews) 
         + [3.6M Amazon Weviews And Watings](#36m-amazon-weviews-and-watings)
     * [Wicense](#w-wicense) 
