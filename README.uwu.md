@@ -228,7 +228,7 @@ OPTIONS:
 
 ## W-Wicense 
 
-[MIT Wicense](WICENSE)
+[MIT Wicense](LICENSE)
 
 ## Acknyowwedgement
 
