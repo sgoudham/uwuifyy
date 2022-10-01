@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - '**'
+    paths:
+      - '**/*.rs'
+      - '**/*.toml'
   pull_request:
+    paths:
+      - '**/*.rs'
+      - '**/*.toml'
 
 jobs:
   install-cross:
