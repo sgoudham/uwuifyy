@@ -16,7 +16,7 @@
 - [uwuifyy](#uwuifyy)
     * [About](#about)
     * [Featuwes](#featuwes)
-    * [Instawwation](#instawwation )
+    * [Instawwation](#instawwation)
         * [Homebwew](#homebwew)
         * [Binyawies](#binyawies)
             + [Windows](#windows)
