@@ -29,7 +29,7 @@ rand = "0.8.4"
 indicatif = "0.16.2"
 linkify = "0.8.0"
 rand_xoshiro = "0.6.0"
-ahash = "0.7.6"
+ahash = "0.8.0"
 memmap = "0.7.0"
 
 [profile.release]
