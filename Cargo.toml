@@ -24,7 +24,7 @@ exclude = [
 name = "uwuifyy"
 
 [dependencies]
-clap = "3.0.13"
+clap = "4.0.8"
 rand = "0.8.4"
 indicatif = "0.16.2"
 linkify = "0.8.0"
